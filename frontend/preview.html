@@ -6,38 +6,38 @@
   <title>Fund Compass (Powered by Groww) — Facts-Only MF Assistant</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    body { background-color: #0d1117; color: #f0f6fc; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    body { background-color: #f8fafc; color: #0f172a; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
     ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: #161b22; }
-    ::-webkit-scrollbar-thumb { background: #30363d; border-radius: 3px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
   </style>
 </head>
-<body class="flex flex-col h-screen">
+<body class="flex flex-col h-screen bg-[#f8fafc] text-slate-800">
 
   <!-- TOP COMPLIANCE HEADER -->
-  <header class="bg-[#161b22] border-b border-[#30363d] px-4 py-3 sticky top-0 z-20 shadow-md">
+  <header class="bg-white border-b border-slate-200 px-4 py-2.5 sticky top-0 z-20 shadow-xs">
     <div class="max-w-5xl mx-auto flex flex-wrap items-center justify-between gap-3">
-      <div class="flex items-center space-x-3">
-        <div class="bg-[#00D09C] p-2 rounded-xl text-black font-black text-lg">🧭</div>
-        <div>
-          <div class="flex items-center space-x-2">
-            <h1 class="text-lg font-bold tracking-tight text-white">Fund Compass</h1>
-            <span class="text-xs bg-[#21262d] text-gray-300 px-2 py-0.5 rounded-full border border-gray-700">powered by Groww</span>
-          </div>
-          <p class="text-xs text-gray-400">Facts-Only Mutual Fund Assistant (HDFC Schemes)</p>
-        </div>
+      <!-- LEFT UPPER CORNER BRANDING WITH LOGO -->
+      <div class="flex items-center">
+        <img
+          src="logo.png"
+          alt="Fund Compass - A Mutual Fund FAQ Assistant Inspired By Groww"
+          class="h-10 sm:h-11 w-auto max-w-[190px] sm:max-w-[240px] object-contain"
+        />
       </div>
 
       <!-- PERMANENT DISCLAIMER BADGE -->
-      <div class="flex items-center space-x-2 bg-[#2d1b14] border border-[#ff7b72]/40 text-[#ff7b72] px-3 py-1.5 rounded-lg text-xs font-semibold">
+      <div class="flex items-center space-x-1.5 bg-rose-50 border border-rose-200 text-rose-700 px-3 py-1.5 rounded-lg text-xs font-semibold shadow-xs">
         <span>🛡️</span>
         <span>Facts-only. No investment advice.</span>
       </div>
 
+      <!-- Actions & Status -->
       <div class="flex items-center space-x-2 text-xs">
-        <div class="flex items-center space-x-1.5 px-2.5 py-1 bg-[#21262d] rounded-md border border-[#30363d]">
-          <span class="w-2 h-2 rounded-full bg-[#00D09C] animate-pulse"></span>
-          <span class="text-gray-300 text-[11px]" id="status-label">API Gateway Ready</span>
+        <div class="flex items-center space-x-1.5 px-2.5 py-1.5 bg-slate-50 rounded-lg border border-slate-200">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span class="text-slate-600 text-[11px] font-medium" id="status-label">API Gateway Ready</span>
         </div>
       </div>
     </div>
@@ -45,33 +45,33 @@
 
   <!-- CHAT CONTAINER -->
   <main class="flex-1 overflow-y-auto p-4 max-w-4xl w-full mx-auto space-y-4" id="chat-thread">
-    <div class="my-auto py-8 text-center space-y-6" id="welcome-card">
-      <div class="bg-[#161b22] border border-[#30363d] p-8 rounded-2xl max-w-2xl mx-auto shadow-xl">
-        <div class="w-12 h-12 bg-[#00D09C]/10 border border-[#00D09C]/30 text-[#00D09C] rounded-2xl mx-auto flex items-center justify-center mb-4 text-2xl">
+    <div class="my-auto py-8 sm:py-12 text-center space-y-6" id="welcome-card">
+      <div class="bg-white border border-slate-200 p-8 sm:p-10 rounded-2xl max-w-2xl mx-auto shadow-sm">
+        <div class="w-14 h-14 bg-emerald-50 border border-emerald-100 text-emerald-600 rounded-2xl mx-auto flex items-center justify-center mb-4 text-2xl shadow-xs">
           🧭
         </div>
-        <h2 class="text-xl font-bold text-white mb-2">Welcome to Fund Compass</h2>
-        <p class="text-sm text-gray-300 leading-relaxed max-w-lg mx-auto">
-          Ask objective, verifiable questions about the 5 selected <strong class="text-white">HDFC Mutual Fund</strong> schemes.
-          Every response is strictly facts-only, verified from official AMC/Groww sources, capped at 3 sentences, and includes the verified source citation.
+        <h2 class="text-2xl font-bold text-slate-900 tracking-tight mb-2">Welcome to Fund Compass</h2>
+        <p class="text-sm text-slate-600 leading-relaxed max-w-lg mx-auto">
+          Ask objective, verifiable questions about the 5 selected <strong class="text-slate-900 font-semibold">HDFC Mutual Fund</strong> schemes.
+          Every response is strictly facts-only, verified from official AMC & Groww factsheets, capped at 3 sentences, and includes a verified source citation.
         </p>
 
-        <div class="mt-6 pt-6 border-t border-[#30363d]">
-          <p class="text-xs font-semibold text-gray-400 mb-3 uppercase tracking-wider">
+        <div class="mt-6 pt-6 border-t border-slate-100">
+          <p class="text-xs font-semibold text-slate-400 mb-3 uppercase tracking-wider">
             Click A Quick Starter Question:
           </p>
-          <div class="grid gap-2 text-left">
-            <button onclick="sendQuickPrompt('What is the exit load for HDFC Mid-Cap Opportunities Fund?')" class="bg-[#21262d] hover:bg-[#30363d] text-gray-200 text-sm p-3 rounded-xl border border-[#30363d] hover:border-[#00D09C]/50 transition flex items-center justify-between">
-              <span>What is the exit load for HDFC Mid-Cap Opportunities Fund?</span>
-              <span class="text-[#00D09C]">→</span>
+          <div class="grid gap-2.5 text-left">
+            <button onclick="sendQuickPrompt('What is the exit load for HDFC Mid-Cap Opportunities Fund?')" class="bg-slate-50 hover:bg-emerald-50/50 text-slate-700 hover:text-slate-900 text-sm p-3.5 rounded-xl border border-slate-200 hover:border-emerald-300 transition-all flex items-center justify-between shadow-xs">
+              <span class="font-medium">What is the exit load for HDFC Mid-Cap Opportunities Fund?</span>
+              <span class="text-emerald-600 font-bold">→</span>
             </button>
-            <button onclick="sendQuickPrompt('What is the lock-in period for HDFC ELSS Tax Saver Fund?')" class="bg-[#21262d] hover:bg-[#30363d] text-gray-200 text-sm p-3 rounded-xl border border-[#30363d] hover:border-[#00D09C]/50 transition flex items-center justify-between">
-              <span>What is the lock-in period for HDFC ELSS Tax Saver Fund?</span>
-              <span class="text-[#00D09C]">→</span>
+            <button onclick="sendQuickPrompt('What is the lock-in period for HDFC ELSS Tax Saver Fund?')" class="bg-slate-50 hover:bg-emerald-50/50 text-slate-700 hover:text-slate-900 text-sm p-3.5 rounded-xl border border-slate-200 hover:border-emerald-300 transition-all flex items-center justify-between shadow-xs">
+              <span class="font-medium">What is the lock-in period for HDFC ELSS Tax Saver Fund?</span>
+              <span class="text-emerald-600 font-bold">→</span>
             </button>
-            <button onclick="sendQuickPrompt('What is the minimum SIP amount for HDFC Small Cap Fund?')" class="bg-[#21262d] hover:bg-[#30363d] text-gray-200 text-sm p-3 rounded-xl border border-[#30363d] hover:border-[#00D09C]/50 transition flex items-center justify-between">
-              <span>What is the minimum SIP amount for HDFC Small Cap Fund?</span>
-              <span class="text-[#00D09C]">→</span>
+            <button onclick="sendQuickPrompt('What is the minimum SIP amount for HDFC Small Cap Fund?')" class="bg-slate-50 hover:bg-emerald-50/50 text-slate-700 hover:text-slate-900 text-sm p-3.5 rounded-xl border border-slate-200 hover:border-emerald-300 transition-all flex items-center justify-between shadow-xs">
+              <span class="font-medium">What is the minimum SIP amount for HDFC Small Cap Fund?</span>
+              <span class="text-emerald-600 font-bold">→</span>
             </button>
           </div>
         </div>
@@ -80,7 +80,7 @@
   </main>
 
   <!-- INPUT BAR -->
-  <footer class="bg-[#161b22] border-t border-[#30363d] p-4">
+  <footer class="bg-white border-t border-slate-200 p-4 shadow-xs">
     <div class="max-w-4xl mx-auto flex flex-col space-y-2">
       <form onsubmit="handleFormSubmit(event)" class="flex items-center space-x-2">
         <input
@@ -89,23 +89,23 @@
           maxlength="1000"
           oninput="updateCharCounter(this.value)"
           placeholder="Ask an objective question (e.g., What is the expense ratio of HDFC Small Cap?)..."
-          class="flex-1 bg-[#0d1117] border border-[#30363d] text-gray-100 placeholder-gray-500 text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-[#00D09C] transition"
+          class="flex-1 bg-slate-50 border border-slate-200 text-slate-900 placeholder-slate-400 text-sm px-4 py-3 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
         />
         <button
           type="submit"
           id="submit-btn"
-          class="bg-[#00D09C] hover:bg-[#00B88A] text-black px-5 py-3 rounded-xl font-semibold transition flex items-center space-x-2 shrink-0 shadow-md"
+          class="bg-[#00D09C] hover:bg-[#00B88A] text-slate-950 px-5 py-3 rounded-xl font-semibold transition flex items-center space-x-2 shrink-0 shadow-xs"
         >
           <span>Send</span>
           <span>🚀</span>
         </button>
       </form>
-      <div class="flex items-center justify-between text-[11px] text-gray-500 px-1">
+      <div class="flex items-center justify-between text-[11px] text-slate-400 px-1">
         <span>Fund Compass does not provide investment advice or fund recommendations.</span>
         <div class="flex items-center space-x-3">
           <span id="char-counter">0/1000</span>
           <span>•</span>
-          <button onclick="resetConversation()" class="hover:text-gray-300 underline">Clear Conversation</button>
+          <button onclick="resetConversation()" class="hover:text-rose-600 text-slate-500 underline transition-colors">Clear Conversation</button>
         </div>
       </div>
     </div>
@@ -131,17 +131,17 @@
       const userBubble = document.createElement('div');
       userBubble.className = "flex flex-col items-end";
       userBubble.innerHTML = `
-        <div class="max-w-[85%] rounded-2xl p-4 shadow-md bg-[#00D09C] text-black font-medium rounded-br-xs">
+        <div class="max-w-[85%] rounded-2xl p-4 shadow-xs bg-[#00D09C] text-slate-950 font-medium rounded-br-xs">
           <p class="text-sm leading-relaxed">${escapeHtml(query)}</p>
         </div>
-        <span class="text-[10px] text-gray-500 mt-1 px-1">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+        <span class="text-[10px] text-slate-400 mt-1 px-1">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
       `;
       thread.appendChild(userBubble);
 
       // Append loading bubble
       const loadingBubble = document.createElement('div');
       loadingBubble.id = 'loading-indicator';
-      loadingBubble.className = "flex items-center space-x-2 text-gray-400 text-xs py-2 bg-[#161b22] border border-[#30363d] px-4 rounded-xl w-fit";
+      loadingBubble.className = "flex items-center space-x-2 text-slate-600 text-xs py-2.5 bg-white border border-slate-200 px-4 rounded-xl w-fit shadow-xs";
       loadingBubble.innerHTML = `<span>⏳</span><span>Retrieving verified facts and generating compliant response...</span>`;
       thread.appendChild(loadingBubble);
       thread.scrollTop = thread.scrollHeight;
@@ -160,39 +160,39 @@
 
         let intentBadge = '';
         if (data.intent === 'factual_response') {
-          intentBadge = `<span class="bg-[#00D09C]/10 text-[#00D09C] border border-[#00D09C]/30 px-2 py-0.5 rounded font-semibold text-[11px] mb-2 inline-block">✓ Facts-Only Response</span>`;
+          intentBadge = `<span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-0.5 rounded font-semibold text-[11px] mb-2 inline-block">✓ Facts-Only Response</span>`;
         } else if (data.intent === 'advisory_refusal') {
-          intentBadge = `<span class="bg-[#ff7b72]/10 text-[#ff7b72] border border-[#ff7b72]/30 px-2 py-0.5 rounded font-semibold text-[11px] mb-2 inline-block">⚠️ Advisory Refused</span>`;
+          intentBadge = `<span class="bg-rose-50 text-rose-700 border border-rose-200 px-2.5 py-0.5 rounded font-semibold text-[11px] mb-2 inline-block">⚠️ Advisory Refused</span>`;
         } else if (data.intent === 'performance_refusal') {
-          intentBadge = `<span class="bg-sky-400/10 text-sky-400 border border-sky-400/30 px-2 py-0.5 rounded font-semibold text-[11px] mb-2 inline-block">📊 Factsheet Redirect</span>`;
+          intentBadge = `<span class="bg-sky-50 text-sky-700 border border-sky-200 px-2.5 py-0.5 rounded font-semibold text-[11px] mb-2 inline-block">📊 Factsheet Redirect</span>`;
         } else if (data.intent === 'out_of_scope_refusal') {
-          intentBadge = `<span class="bg-purple-400/10 text-purple-400 border border-purple-400/30 px-2 py-0.5 rounded font-semibold text-[11px] mb-2 inline-block">🧭 Mutual Funds Scope</span>`;
+          intentBadge = `<span class="bg-indigo-50 text-indigo-700 border border-indigo-200 px-2.5 py-0.5 rounded font-semibold text-[11px] mb-2 inline-block">🧭 Mutual Funds Scope</span>`;
         } else if (data.intent === 'pii_violation') {
-          intentBadge = `<span class="bg-amber-400/10 text-amber-400 border border-amber-400/30 px-2 py-0.5 rounded font-semibold text-[11px] mb-2 inline-block">🛡️ Security Alert (No PII)</span>`;
+          intentBadge = `<span class="bg-amber-50 text-amber-800 border border-amber-200 px-2.5 py-0.5 rounded font-semibold text-[11px] mb-2 inline-block">🛡️ Security Alert (No PII)</span>`;
         }
 
         let citationMarkup = '';
         if (data.source_url) {
           citationMarkup = `
-            <div class="mt-3 pt-2.5 border-t border-[#30363d] flex items-center justify-between text-xs">
-              <span class="text-gray-400">Verified Source:</span>
-              <a href="${data.source_url}" target="_blank" rel="noopener noreferrer" class="text-[#00D09C] hover:underline font-mono text-[11px] truncate max-w-[280px]">
+            <div class="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-xs">
+              <span class="text-slate-500 font-medium">Verified Source:</span>
+              <a href="${data.source_url}" target="_blank" rel="noopener noreferrer" class="text-emerald-600 hover:text-emerald-700 hover:underline font-mono text-[11px] font-semibold truncate max-w-[280px]">
                 ${data.source_url} ↗
               </a>
             </div>
           `;
         }
 
-        let footerMarkup = `<p class="mt-1 text-[11px] text-gray-500 italic">Last updated from sources: ${data.last_updated || '2026-11-10'}</p>`;
+        let footerMarkup = `<p class="mt-1 text-[11px] text-slate-400 italic">Last updated from sources: ${data.last_updated || '2026-11-10'}</p>`;
 
         botBubble.innerHTML = `
-          <div class="max-w-[85%] rounded-2xl p-4 shadow-md bg-[#161b22] border border-[#30363d] text-gray-100 rounded-bl-xs">
+          <div class="max-w-[85%] rounded-2xl p-4 shadow-xs bg-white border border-slate-200 text-slate-800 rounded-bl-xs">
             ${intentBadge}
             <p class="text-sm leading-relaxed whitespace-pre-wrap">${escapeHtml(data.reply)}</p>
             ${citationMarkup}
             ${footerMarkup}
           </div>
-          <span class="text-[10px] text-gray-500 mt-1 px-1">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+          <span class="text-[10px] text-slate-400 mt-1 px-1">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
         `;
         thread.appendChild(botBubble);
       } catch (err) {
@@ -200,8 +200,8 @@
         const errBubble = document.createElement('div');
         errBubble.className = "flex flex-col items-start";
         errBubble.innerHTML = `
-          <div class="max-w-[85%] rounded-2xl p-4 shadow-md bg-[#161b22] border border-[#ff7b72]/50 text-gray-100">
-            <span class="text-[#ff7b72] text-xs font-semibold">⚠️ Connection Notice</span>
+          <div class="max-w-[85%] rounded-2xl p-4 shadow-xs bg-white border border-rose-200 text-slate-800">
+            <span class="text-rose-600 text-xs font-semibold">⚠️ Connection Notice</span>
             <p class="text-sm mt-1">Unable to connect to the Fund Compass backend at ${API_URL}. Ensure FastAPI is running on port 8000.</p>
           </div>
         `;
@@ -248,4 +248,3 @@
   </script>
 </body>
 </html>
-
