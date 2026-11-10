@@ -1,3 +1,5 @@
+![Fund Compass Banner](assets/fundcompass-banner.png)
+
 # Fund Compass (Powered by Groww)
 ### Facts-Only Mutual Fund Assistant (RAG-based Chatbot)
 
