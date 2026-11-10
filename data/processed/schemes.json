@@ -1,0 +1,142 @@
+[
+  {
+    "scheme_id": "hdfc-mid-cap-fund-direct-growth",
+    "scheme_name": "HDFC Mid-Cap Opportunities Fund (Direct Plan - Growth)",
+    "amc": "HDFC Mutual Fund",
+    "category": "Equity: Mid Cap",
+    "source_url": "https://groww.in/mutual-funds/hdfc-mid-cap-fund-direct-growth",
+    "last_updated": "2026-11-10",
+    "facts": {
+      "expense_ratio": "0.76%",
+      "exit_load": "1.00% if redeemed within 1 year; Nil after 1 year",
+      "min_sip_amount": "₹100",
+      "min_lumpsum_amount": "₹100",
+      "lock_in_period": "Nil",
+      "riskometer": "Very High",
+      "benchmark": "NIFTY Midcap 150 TRI",
+      "fund_manager": "Chirag Setalvad",
+      "factsheet_url": "https://www.hdfcfund.com/investor-services/fund-performance/factsheet",
+      "statement_download_process": "Statements and Capital Gains reports can be downloaded from the HDFC Mutual Fund online investor portal or via MFCentral/CAMS using PAN and registered folio number."
+    },
+    "aliases": [
+      "mid cap",
+      "mid-cap",
+      "hdfc mid cap",
+      "hdfc mid-cap",
+      "hdfc midcap",
+      "midcap"
+    ]
+  },
+  {
+    "scheme_id": "hdfc-small-cap-fund-direct-growth",
+    "scheme_name": "HDFC Small Cap Fund (Direct Plan - Growth)",
+    "amc": "HDFC Mutual Fund",
+    "category": "Equity: Small Cap",
+    "source_url": "https://groww.in/mutual-funds/hdfc-small-cap-fund-direct-growth",
+    "last_updated": "2026-11-10",
+    "facts": {
+      "expense_ratio": "0.67%",
+      "exit_load": "1.00% if redeemed within 1 year; Nil after 1 year",
+      "min_sip_amount": "₹100",
+      "min_lumpsum_amount": "₹100",
+      "lock_in_period": "Nil",
+      "riskometer": "Very High",
+      "benchmark": "S&P BSE 250 SmallCap TRI",
+      "fund_manager": "Chirag Setalvad",
+      "factsheet_url": "https://www.hdfcfund.com/investor-services/fund-performance/factsheet",
+      "statement_download_process": "Statements and Capital Gains reports can be downloaded from the HDFC Mutual Fund online investor portal or via MFCentral/CAMS using PAN and registered folio number."
+    },
+    "aliases": [
+      "small cap",
+      "small-cap",
+      "hdfc small cap",
+      "hdfc small-cap",
+      "hdfc small",
+      "smallcap"
+    ]
+  },
+  {
+    "scheme_id": "hdfc-gold-etf-fund-of-fund-direct-plan-growth",
+    "scheme_name": "HDFC Gold ETF Fund of Fund (Direct Plan - Growth)",
+    "amc": "HDFC Mutual Fund",
+    "category": "Other: Commodities / Gold FoF",
+    "source_url": "https://groww.in/mutual-funds/hdfc-gold-etf-fund-of-fund-direct-plan-growth",
+    "last_updated": "2026-11-10",
+    "facts": {
+      "expense_ratio": "0.16%",
+      "exit_load": "2.00% if redeemed within 15 days; Nil after 15 days",
+      "min_sip_amount": "₹100",
+      "min_lumpsum_amount": "₹100",
+      "lock_in_period": "Nil",
+      "riskometer": "High",
+      "benchmark": "Domestic Price of Physical Gold",
+      "fund_manager": "Nirman Morakhia, Arun Agarwal",
+      "factsheet_url": "https://www.hdfcfund.com/investor-services/fund-performance/factsheet",
+      "statement_download_process": "Statements and Capital Gains reports can be downloaded from the HDFC Mutual Fund online investor portal or via MFCentral/CAMS using PAN and registered folio number."
+    },
+    "aliases": [
+      "gold",
+      "gold etf",
+      "gold fof",
+      "hdfc gold",
+      "hdfc gold etf",
+      "gold fund"
+    ]
+  },
+  {
+    "scheme_id": "hdfc-large-cap-fund-direct-growth",
+    "scheme_name": "HDFC Top 100 / Large Cap Fund (Direct Plan - Growth)",
+    "amc": "HDFC Mutual Fund",
+    "category": "Equity: Large Cap",
+    "source_url": "https://groww.in/mutual-funds/hdfc-large-cap-fund-direct-growth",
+    "last_updated": "2026-11-10",
+    "facts": {
+      "expense_ratio": "0.99%",
+      "exit_load": "1.00% if redeemed within 1 year; Nil after 1 year",
+      "min_sip_amount": "₹100",
+      "min_lumpsum_amount": "₹100",
+      "lock_in_period": "Nil",
+      "riskometer": "Very High",
+      "benchmark": "NIFTY 100 TRI",
+      "fund_manager": "Rahul Baijal",
+      "factsheet_url": "https://www.hdfcfund.com/investor-services/fund-performance/factsheet",
+      "statement_download_process": "Statements and Capital Gains reports can be downloaded from the HDFC Mutual Fund online investor portal or via MFCentral/CAMS using PAN and registered folio number."
+    },
+    "aliases": [
+      "large cap",
+      "large-cap",
+      "hdfc large cap",
+      "top 100",
+      "hdfc top 100",
+      "largecap"
+    ]
+  },
+  {
+    "scheme_id": "hdfc-elss-tax-saver-fund-direct-plan-growth",
+    "scheme_name": "HDFC ELSS Tax Saver Fund (Direct Plan - Growth)",
+    "amc": "HDFC Mutual Fund",
+    "category": "Equity: ELSS (Tax Saving)",
+    "source_url": "https://groww.in/mutual-funds/hdfc-elss-tax-saver-fund-direct-plan-growth",
+    "last_updated": "2026-11-10",
+    "facts": {
+      "expense_ratio": "1.08%",
+      "exit_load": "Nil (subject to statutory lock-in period)",
+      "min_sip_amount": "₹500",
+      "min_lumpsum_amount": "₹500",
+      "lock_in_period": "3 Years mandatory lock-in under Section 80C of the Income Tax Act",
+      "riskometer": "Very High",
+      "benchmark": "NIFTY 500 TRI",
+      "fund_manager": "Roshi Jain",
+      "factsheet_url": "https://www.hdfcfund.com/investor-services/fund-performance/factsheet",
+      "statement_download_process": "Statements and Capital Gains reports can be downloaded from the HDFC Mutual Fund online investor portal or via MFCentral/CAMS using PAN and registered folio number."
+    },
+    "aliases": [
+      "elss",
+      "tax saver",
+      "hdfc elss",
+      "hdfc tax saver",
+      "80c",
+      "tax saving"
+    ]
+  }
+]
