@@ -72,13 +72,19 @@ def sanitize_urls(text: str) -> str:
     """
     if not text:
         return ""
+    # Strip stray LLM bracket citation tokens (e.g. 【4:0†source】 or stray 【)
+    cleaned = re.sub(r"【.*?】", "", text)
+    cleaned = re.sub(r"【.*?$", "", cleaned)
+    cleaned = cleaned.replace("【", "").replace("】", "")
     # Strip markdown links [label](url) leaving just the label or stripping if url only
-    cleaned = re.sub(r"\[([^\]]*)\]\(https?://\S+?\)", r"\1", text)
+    cleaned = re.sub(r"\[([^\]]*)\]\(https?://\S+?\)", r"\1", cleaned)
     # Strip bare HTTP/HTTPS URLs
     cleaned = re.sub(r"https?://\S+", "", cleaned)
     # Strip residual empty link markdown e.g. "Source: []()" or "Source:"
     cleaned = re.sub(r"Source:\s*\[\s*\]\(\s*\)", "", cleaned, flags=re.IGNORECASE)
     cleaned = re.sub(r"\n*Source:\s*$", "", cleaned, flags=re.IGNORECASE | re.MULTILINE)
+    # Clean up spaces before punctuation (e.g., from stripped citation markers)
+    cleaned = re.sub(r"\s+([.,;:!?])", r"\1", cleaned)
     return cleaned.strip()
 
 
