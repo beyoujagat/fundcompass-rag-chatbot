@@ -388,10 +388,11 @@ class TestAdversarialBenchmarkMatrix(unittest.TestCase):
     """
 
     def setUp(self):
-        if HAS_FASTAPI and app is not None:
-            self.client = TestClient(app)
-            self.patcher = patch("src.rag.generator.get_groq_client", return_value=None)
-            self.patcher.start()
+        if not HAS_FASTAPI or app is None:
+            self.skipTest("FastAPI / TestClient is not available in this environment")
+        self.client = TestClient(app)
+        self.patcher = patch("src.rag.generator.get_groq_client", return_value=None)
+        self.patcher.start()
 
     def tearDown(self):
         if hasattr(self, "patcher"):
