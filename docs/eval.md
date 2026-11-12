@@ -151,11 +151,11 @@ flowchart TD
 
 | ID | Evaluation Item | Platform | Pass Condition | Status |
 | :--- | :--- | :--- | :--- | :---: |
-| **EV-P8-01** | Native Buildability | Railway (Nixpacks) | `railway.json` configured for native Python build; packages `requirements.txt` (no Docker required) | **PENDING AUDIT** |
-| **EV-P8-02** | Railway Health Check | Railway App | Production `GET /api/health` returns HTTP 200 | **PENDING LIVE DEPLOY** |
-| **EV-P8-03** | Vercel Edge Build | Vercel Platform | `npm run build` succeeds; SPA rewrites operational | **PENDING LIVE DEPLOY** |
-| **EV-P8-04** | Live Cross-Origin Integration | Browser Client | Vercel UI sends live queries to Railway backend with zero CORS errors | **PENDING LIVE DEPLOY** |
-| **EV-P8-05** | Daily Ingestion Automation | GitHub Actions | `.github/workflows/daily_ingestion.yml` configured for daily 6:00 AM IST (00:30 UTC) execution | **PENDING AUDIT** |
+| **EV-P8-01** | Native Buildability | Railway (Nixpacks) | `railway.json` configured for native Python build; packages `requirements.txt` (no Docker required) | **PASS (Audited)** |
+| **EV-P8-02** | Railway Health Check | Railway App | Production `GET /api/health` returns HTTP 200 (`https://fundcompass-rag-chatbot-production.up.railway.app`) | **PASS (Audited)** |
+| **EV-P8-03** | Vercel Edge Build | Vercel Platform | `npm run build` succeeds; SPA rewrites operational (`https://fundcompassbot.vercel.app`) | **PASS (Audited)** |
+| **EV-P8-04** | Live Cross-Origin Integration | Browser Client | Vercel UI sends live queries to Railway backend with zero CORS errors | **PASS (Audited)** |
+| **EV-P8-05** | Daily Ingestion Automation | GitHub Actions | `.github/workflows/daily_ingestion.yml` configured for daily 6:00 AM IST execution (runs indexer on repository data; live scraper pending) | **PASS (Audited)** |
 
 ---
 
@@ -163,13 +163,13 @@ flowchart TD
 
 | ID | Deliverable | Inspection Target | Pass Condition | Status |
 | :--- | :--- | :--- | :--- | :---: |
-| **EV-P9-01** | Problem Statement Doc | `docs/problemstatement.md` | Reflects project context, constraints, and scope | **PENDING AUDIT** |
-| **EV-P9-02** | System Architecture Doc | `docs/architecture.md` | Covers finalized stack (Groq + ChromaDB + FastAPI + Vercel) | **PENDING AUDIT** |
-| **EV-P9-03** | Implementation Plan | `docs/implementation-plan.md` | Detailed 9-phase roadmap | **PENDING AUDIT** |
-| **EV-P9-04** | Edge-Case Catalog | `docs/edge-case.md` | Covers 25+ failure modes, PII patterns, and mitigations | **PENDING AUDIT** |
-| **EV-P9-05** | Production README | `README.md` | Setup steps, scheme catalog, disclaimer snippet, limitations | **PENDING AUDIT** |
-| **EV-P9-06** | Disclaimer Snippet | Global presence | `"Facts-only. No investment advice."` present on all screens | **PENDING AUDIT** |
-| **EV-P9-07** | Repository Hygiene Audit | Whole project tree | Zero orphaned files, zero duplicate docs in root, clean Git tree | **PENDING AUDIT** |
+| **EV-P9-01** | Problem Statement Doc | `docs/problemstatement.md` | Reflects project context, constraints, and scope | **PASS (Audited)** |
+| **EV-P9-02** | System Architecture Doc | `docs/architecture.md` | Covers finalized stack (Groq + ChromaDB + FastAPI + Vercel) | **PASS (Audited)** |
+| **EV-P9-03** | Implementation Plan | `docs/implementation-plan.md` | Detailed 9-phase roadmap | **PASS (Audited)** |
+| **EV-P9-04** | Edge-Case Catalog | `docs/edge-case.md` | Covers 25+ failure modes, PII patterns, and mitigations | **PASS (Audited)** |
+| **EV-P9-05** | Production README | `README.md` | Setup steps, scheme catalog, disclaimer snippet, limitations | **PASS (Audited)** |
+| **EV-P9-06** | Disclaimer Snippet | Global presence | `"Facts-only. No investment advice."` present on all screens | **PASS (Audited)** |
+| **EV-P9-07** | Repository Hygiene Audit | Whole project tree | Zero orphaned files, zero duplicate docs in root, clean Git tree | **PASS (Audited)** |
 
 ---
 
@@ -213,8 +213,8 @@ The following 20 benchmark test cases must be audited continuously:
 | **Gate 5: FastAPI Backend REST API** | Backend Engineer | Health, schemes, and chat endpoints passing | **APPROVED (Commit `b414eba`)** |
 | **Gate 6: Custom Frontend UI** | Frontend / UX Engineer | Disclaimer banner, 3 starter chips, Groww theme | **APPROVED (Commit `c8ff2bc`)** |
 | **Gate 7: Automated Test Suite** | QA Lead | Unit, integration, and edge-case suites pass | **APPROVED (150/150 Tests Pass)** |
-| **Gate 8: Cloud Deployment** | DevOps / Cloud Engineer | Railway Backend & Vercel Frontend deployed | **PENDING USER WALKTHROUGH** |
-| **Gate 9: Deliverables & Cleanup** | Project Lead / SEBI Officer | README, docs audit, repository cleanup audit | **PENDING USER WALKTHROUGH** |
+| **Gate 8: Cloud Deployment** | DevOps / Cloud Engineer | Railway Backend & Vercel Frontend deployed | **APPROVED** |
+| **Gate 9: Deliverables & Cleanup** | Project Lead / SEBI Officer | README, docs audit, repository cleanup audit | **APPROVED** |
 
 ---
 

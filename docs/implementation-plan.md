@@ -63,6 +63,10 @@ Establish the runtime environment, directory layout, dependency management, and 
 ### Objectives:
 Curate, normalize, and index the 5 target HDFC mutual fund schemes from Groww into a high-signal vector knowledge base.
 
+> [!NOTE]
+> **Implementation Scope Note:**  
+> The current knowledge base is constructed from an audited, canonical seed dataset (`data/raw/hdfc_schemes_raw.json` and `data/processed/schemes.json`). Automated live web scraping (`scraper.py`) from Groww scheme pages is an identified enhancement for future integration; the current ingestion pipeline runs deterministically via `normalizer.py -> chunker.py -> indexer.py`.
+
 ### Target Schemes & Seed URLs:
 1. **HDFC Mid-Cap Opportunities Fund (Direct - Growth)**: `https://groww.in/mutual-funds/hdfc-mid-cap-fund-direct-growth`
 2. **HDFC Small Cap Fund (Direct - Growth)**: `https://groww.in/mutual-funds/hdfc-small-cap-fund-direct-growth`
@@ -260,7 +264,7 @@ flowchart TD
     subgraph Automation ["Stage 8C: Daily Ingestion Automation"]
         Cron["GitHub Action: daily_ingestion.yml"]
         Runner["Daily at 6:00 AM IST (00:30 UTC)"]
-        Pipeline["Scraper -> Normalizer -> Chunker -> Indexer"]
+        Pipeline["Ingestion Pipeline: Normalizer -> Chunker -> Indexer<br>(Note: Scraper pending)"]
         Cron --> Runner --> Pipeline
     end
 
@@ -298,11 +302,12 @@ flowchart TD
    - **Author Execution Manual (`docs/deployment.md`)**:
      - Provide a dedicated, copy-paste deployment guide with exact environment variable matrices, GitHub push commands, Railway settings, Vercel root directory settings, and post-deployment checklist.
 
-3. **Stage 8C: Automated Daily Ingestion Scheduler via GitHub Actions**:
+3. **Stage 8C: Automated Ingestion Scheduler via GitHub Actions**:
    - Create `.github/workflows/daily_ingestion.yml` configured with a scheduled cron trigger (`30 0 * * *`, daily at 6:00 AM IST / 00:30 UTC) plus `workflow_dispatch` for manual on-demand triggers.
-   - Execute an automated pipeline runner:
-     `scraper.py` $\rightarrow$ `normalizer.py` $\rightarrow$ `chunker.py` $\rightarrow$ `indexer.py`.
-   - Automatically commit updated data (`schemes.json` and `chunks.json`) back to the GitHub repository, which seamlessly triggers an automated zero-downtime rebuild on Railway.
+   - Execute the indexer pipeline runner:
+     `python -m src.ingestion.indexer` (executes normalization, semantic chunking, and ChromaDB vector persistence on repository data).
+   - Commit & push changes if updated chunks or data files are modified.
+   - *Technical Transparency Note:* Automated live web scraping (`scraper.py`) from Groww is not yet linked into this workflow; currently, the action executes re-indexing on existing repository datasets.
 
 4. **Stage 8D: Live Cloud Deployment Walkthrough**:
    - Push repository to GitHub, deploy the backend service to Railway, and deploy the frontend client to Vercel.
@@ -361,12 +366,12 @@ Package the project with complete setup instructions, architecture summaries, co
 | **1** | **Environment & Foundation** | `requirements.txt`, `.env.example`, `config.py` | **Completed & Audited (Commit `735d958`)** |
 | **2** | **Ingestion & Vector Knowledge Base** | `schemes.json`, `indexer.py`, `chunks.json` | **Completed & Audited (Commit `9caa239`)** |
 | **3** | **Guardrails & Compliance Engine** | `pii_filter.py`, `intent_classifier.py`, `refusal_engine.py` | **Completed & Audited** |
-| **4** | **RAG & Groq LLM Generation** | `retriever.py`, `generator.py`, `postprocessor.py` | Pending User Walkthrough |
-| **5** | **FastAPI Backend Services** | `schemas.py`, `routes.py`, `main.py` | Pending User Walkthrough |
-| **6** | **Custom Frontend UI** | `frontend/` components, `preview.html`, `vercel.json` | Pending User Walkthrough |
-| **7** | **Automated Testing Suite** | `test_guardrails.py`, `test_constraints.py`, `test_edge_cases.py`, `test_api.py` | Pending User Walkthrough |
-| **8** | **Cloud Deployment** | `railway.json` (Nixpacks), Railway + Vercel Live | Pending User Walkthrough |
-| **9** | **Documentation & Final Cleanup** | `README.md`, docs audit, repository cleanup audit | Pending User Walkthrough |
+| **4** | **RAG & Groq LLM Generation** | `retriever.py`, `generator.py`, `postprocessor.py` | **Completed & Audited** |
+| **5** | **FastAPI Backend Services** | `schemas.py`, `routes.py`, `main.py` | **Completed & Audited** |
+| **6** | **Custom Frontend UI** | `frontend/` components, `preview.html`, `vercel.json` | **Completed & Audited** |
+| **7** | **Automated Testing Suite** | `test_guardrails.py`, `test_constraints.py`, `test_edge_cases.py`, `test_api.py` | **Completed & Audited** |
+| **8** | **Cloud Deployment** | `railway.json` (Nixpacks), Railway + Vercel Live | **Completed & Audited** |
+| **9** | **Documentation & Final Cleanup** | `README.md`, docs audit, repository cleanup audit | **Completed & Audited** |
 
 ---
 

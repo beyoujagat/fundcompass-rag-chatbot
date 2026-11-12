@@ -595,7 +595,6 @@ export default function App() {
   const [showThemeDropdown, setShowThemeDropdown] = useState(false);
   const themeDropdownRef = useRef<HTMLDivElement>(null);
   const [apiConnected, setApiConnected] = useState<boolean | null>(null);
-  const [citationToggle, setCitationToggle] = useState(true);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [recentQueries, setRecentQueries] = useState<string[]>([]);
   const [showRecentDropdown, setShowRecentDropdown] = useState(false);
@@ -1595,19 +1594,15 @@ export default function App() {
                     </button>
                   </div>
 
-                  {/* Right Controls: Citation Toggle, Counter & Send Button */}
+                  {/* Right Controls: Citation Badge, Counter & Send Button */}
                   <div className="flex items-center space-x-3">
-                    <button
-                      onClick={() => setCitationToggle(!citationToggle)}
-                      className={`flex items-center space-x-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold transition-all duration-200 ${citationToggle
-                          ? 'bg-teal-50 text-teal-700 border border-teal-200'
-                          : 'bg-slate-50 text-slate-400 border border-slate-200'
-                        }`}
+                    <div
+                      className="flex items-center space-x-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-teal-50 text-teal-700 border border-teal-200"
                       title="Verified Source Citation requirement"
                     >
-                      <span className={`w-2 h-2 rounded-full ${citationToggle ? 'bg-teal-500' : 'bg-slate-300'}`}></span>
+                      <span className="w-2 h-2 rounded-full bg-teal-500"></span>
                       <span>Citation</span>
-                    </button>
+                    </div>
 
                     <span className="text-[11px] text-slate-400">
                       {input.length}/1000

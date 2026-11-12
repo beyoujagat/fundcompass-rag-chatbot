@@ -139,8 +139,9 @@ Vercel hosts the client-side SPA in `frontend/`. The `vercel.json` file guarante
 }
 ```
 
-### 3. Automated Daily Ingestion Workflow (`.github/workflows/daily_ingestion.yml`)
-To guarantee that mutual fund facts (expense ratios, exit loads, fund managers, and risk ratings) remain up to date without manual intervention, a GitHub Actions workflow runs every morning at **6:00 AM IST (00:30 UTC)**:
+### 3. Automated Ingestion & Indexing Workflow (`.github/workflows/daily_ingestion.yml`)
+
+A scheduled GitHub Actions workflow is configured to run every morning at **6:00 AM IST (00:30 UTC)** or on manual `workflow_dispatch`:
 
 ```yaml
 name: Daily Mutual Fund Data Ingestion
@@ -187,7 +188,12 @@ jobs:
             git push
           fi
 ```
-* **Auto-Redeploy Trigger**: When updated data files in `data/` are committed and pushed by the action, Railway immediately detects the commit and redeploys the live backend automatically.
+
+> [!IMPORTANT]
+> **Operational Scope & Implementation Status:**
+> - **What it does:** The workflow executes `python -m src.ingestion.indexer`, which normalizes repository scheme records, generates 20 granular semantic chunks, and builds the ChromaDB index (`chunks.json` and SQLite database).
+> - **What is pending:** Automated live web scraping (`scraper.py`) from Groww is not yet linked into this workflow. Currently, the workflow operates on the repository's static seed data (`schemes.json`) and does **not** dynamically fetch live web updates from Groww.
+> - **Auto-Redeploy Trigger:** Whenever updated data files in `data/` are committed and pushed by the action, Railway detects the commit and redeploys the live backend automatically.
 
 ---
 
