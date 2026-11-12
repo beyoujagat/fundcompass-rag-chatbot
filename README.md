@@ -245,7 +245,7 @@ flowchart LR
 ### 1. Backend on Railway (Native Nixpacks)
 - Configuration file: `railway.json`
 - Builder: `NIXPACKS` (`NIXPACKS_PYTHON_VERSION: "3.11"`)
-- Start Command: `uvicorn src.api.main:app --host 0.0.0.0 --port $PORT --workers 2`
+- Start Command: `python -m src.ingestion.indexer && uvicorn src.api.main:app --host 0.0.0.0 --port $PORT --workers 1` (self-indexing startup)
 - Healthcheck Endpoint: `/api/health`
 - Required Environment Variables: `GROQ_API_KEY`, `GROQ_MODEL=openai/gpt-oss-120b`, `CORS_ORIGINS`.
 

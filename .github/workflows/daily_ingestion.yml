@@ -4,16 +4,35 @@ on:
   schedule:
     - cron: '30 0 * * *' # Daily at 6:00 AM IST (00:30 UTC)
   workflow_dispatch:      # Allows manual trigger anytime from GitHub UI
+    inputs:
+      dry_run:
+        description: 'Dry run mode (fetch and validate without persisting to disk)'
+        required: false
+        type: boolean
+        default: false
+      delay:
+        description: 'Delay in seconds between consecutive scheme requests (default: 0.5)'
+        required: false
+        type: string
+        default: '0.5'
+
+concurrency:
+  group: daily-data-ingestion
+  cancel-in-progress: false
 
 jobs:
   ingest-and-update:
+    name: Scrape, Validate & Index Schemes
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     permissions:
       contents: write
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
 
       - name: Set up Python 3.11
         uses: actions/setup-python@v5
@@ -26,19 +45,43 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Execute Full Ingestion Pipeline
+      - name: Step 1 - Execute Groww Scheme Scraper & Normalizer
+        id: scrape
+        env:
+          DRY_RUN_FLAG: ${{ github.event.inputs.dry_run == 'true' && '--dry-run' || '' }}
+          DELAY_VAL: ${{ github.event.inputs.delay || '0.5' }}
         run: |
-          python -m src.ingestion.indexer
+          echo "::group::Executing Automated Groww Scraper"
+          python -m src.ingestion.scraper --delay "$DELAY_VAL" $DRY_RUN_FLAG --step-summary
+          echo "::endgroup::"
 
-      - name: Commit & Push Updated Knowledge Base
+      - name: Step 2 - Execute RAG Ingestion & Vector Indexing
+        id: index
+        run: |
+          echo "::group::Rebuilding Semantic Chunks & Vector Store"
+          python -m src.ingestion.indexer
+          echo "::endgroup::"
+
+      - name: Step 3 - Upload Updated Knowledge Base Artifacts
+        uses: actions/upload-artifact@v4
+        continue-on-error: true
+        with:
+          name: mutual-fund-knowledge-base-${{ github.run_id }}
+          path: |
+            data/processed/schemes.json
+            data/chroma_db/chunks.json
+          retention-days: 30
+
+      - name: Step 4 - Commit & Push Updated Scheme Facts
+        if: ${{ github.event.inputs.dry_run != 'true' }}
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action [Daily Ingestion]"
-          git add data/
+          git add data/processed/schemes.json
           if git diff --staged --quiet; then
-            echo "No data changes detected. Knowledge base is already current."
+            echo "No factual changes detected in schemes.json. Knowledge base is already current."
           else
             git commit -m "chore(data): automated daily ingestion update [$(date -u +'%Y-%m-%d')]"
-            git push
+            git pull --rebase origin main || git rebase --abort
+            git push origin main
           fi
-

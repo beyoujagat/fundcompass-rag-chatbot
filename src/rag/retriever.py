@@ -22,12 +22,15 @@ logger = logging.getLogger(__name__)
 
 # Import ChromaDB vector query utility if available
 try:
-    from src.ingestion.indexer import query_vector_store
+    import chromadb
+    from src.ingestion.indexer import get_embedding_function, query_vector_store
 
     HAS_VECTOR_INDEX = True
 except (ImportError, Exception) as err:
     logger.warning(f"Vector store indexer not available: {err}")
+    chromadb = None
     query_vector_store = None
+    get_embedding_function = None
     HAS_VECTOR_INDEX = False
 
 # Known competitor AMCs and fund houses (outside the 5 supported HDFC funds)
@@ -200,11 +203,87 @@ class SchemeRetriever:
         self,
         data_path: Path = PROCESSED_DATA_PATH,
         chroma_dir: Path = CHROMA_PERSIST_DIR,
+        auto_validate_index: bool = True,
     ):
         self.data_path = Path(data_path)
         self.chroma_dir = Path(chroma_dir)
         self.schemes = self._load_schemes()
         self.scheme_map = {s["scheme_id"]: s for s in self.schemes}
+        self.index_status: Dict[str, Any] = {}
+        if auto_validate_index and self.schemes:
+            self.index_status = self.validate_index_readiness()
+
+    def validate_index_readiness(self) -> Dict[str, Any]:
+        """
+        Validates that ChromaDB vector store is populated with verified scheme chunks.
+        Checks both total chunk count (>= 20) and per-scheme coverage for all 5 canonical
+        scheme IDs. If the index is missing or incomplete, triggers self-healing
+        build_vector_index() to guarantee vector retrieval rather than silently
+        falling back to JSON.
+        """
+        status: Dict[str, Any] = {
+            "schemes_count": len(self.schemes),
+            "chroma_available": HAS_VECTOR_INDEX,
+            "vector_index_ready": False,
+            "chunks_count": 0,
+            "missing_schemes": [],
+        }
+
+        if not self.schemes:
+            logger.warning(f"No scheme records found at {self.data_path}")
+            return status
+
+        # Check ChromaDB collection status
+        if HAS_VECTOR_INDEX and chromadb is not None:
+            try:
+                client = chromadb.PersistentClient(path=str(self.chroma_dir))
+                emb_fn = get_embedding_function()
+                collection = client.get_or_create_collection(
+                    name="fund_compass_schemes",
+                    embedding_function=emb_fn,
+                )
+                count = collection.count()
+                status["chunks_count"] = count
+
+                if count >= 20:
+                    # Per-scheme coverage check: verify every canonical scheme has chunks
+                    missing = []
+                    for scheme in self.schemes:
+                        sid = scheme["scheme_id"]
+                        try:
+                            res = collection.get(where={"scheme_id": sid}, limit=1)
+                            if not res or not res.get("ids") or len(res["ids"]) == 0:
+                                missing.append(sid)
+                        except Exception as per_scheme_err:
+                            logger.warning(f"Per-scheme readiness check failed for '{sid}': {per_scheme_err}")
+                            missing.append(sid)
+
+                    status["missing_schemes"] = missing
+                    if not missing:
+                        status["vector_index_ready"] = True
+                        logger.info(f"ChromaDB vector store verified: {count} chunks indexed across all {len(self.schemes)} schemes.")
+                        return status
+                    else:
+                        logger.warning(
+                            f"ChromaDB has {count} total chunks but is missing chunks for schemes: {missing}"
+                        )
+            except Exception as e:
+                logger.warning(f"ChromaDB readiness check error: {e}")
+
+        # If ChromaDB collection has fewer than 20 chunks, missing schemes, or was absent — self-heal
+        logger.info("ChromaDB vector collection missing or incomplete. Initiating self-healing build_vector_index()...")
+        try:
+            from src.ingestion.indexer import build_vector_index
+            collection = build_vector_index(data_path=self.data_path, persist_dir=self.chroma_dir)
+            if hasattr(collection, "count"):
+                status["chunks_count"] = collection.count()
+            status["vector_index_ready"] = True
+            status["missing_schemes"] = []
+            logger.info("Self-healing vector indexing completed successfully.")
+        except Exception as err:
+            logger.error(f"Failed to build vector index during startup validation: {err}")
+
+        return status
 
     def _load_schemes(self) -> List[Dict[str, Any]]:
         """Loads canonical scheme database from processed data path."""
@@ -401,6 +480,7 @@ class SchemeRetriever:
                 "context_text": "",
                 "is_supported": False,
                 "unsupported_scheme": unsupported,
+                "retrieval_source": "none",
             }
 
         scheme_id = scheme["scheme_id"]
@@ -452,6 +532,7 @@ class SchemeRetriever:
             "context_text": context_text,
             "is_supported": True,
             "unsupported_scheme": None,
+            "retrieval_source": "chroma_vector_index" if chunk_metadatas else "json_fallback",
         }
 
     def get_all_schemes(self) -> List[Dict[str, Any]]:

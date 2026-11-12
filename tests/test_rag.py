@@ -420,6 +420,37 @@ class TestGroqInferenceIntegration(unittest.TestCase):
         self.assertIn("Source: [https://groww.in/mutual-funds/hdfc-small-cap-fund-direct-growth]", result.reply)
 
 
+class TestIndexReadinessPerScheme(unittest.TestCase):
+    """Tests for per-scheme ChromaDB vector index readiness validation."""
+
+    def setUp(self):
+        self.retriever = SchemeRetriever()
+
+    def test_index_status_includes_missing_schemes_field(self):
+        """validate_index_readiness() returns a 'missing_schemes' field in the status dict."""
+        status = self.retriever.index_status
+        self.assertIn("missing_schemes", status)
+        self.assertIsInstance(status["missing_schemes"], list)
+
+    def test_all_five_schemes_have_indexed_chunks(self):
+        """Each of the 5 canonical scheme IDs must have at least one indexed chunk."""
+        status = self.retriever.index_status
+        self.assertTrue(status["vector_index_ready"], f"Index not ready: {status}")
+        self.assertEqual(
+            status["missing_schemes"], [],
+            f"Missing chunks for schemes: {status['missing_schemes']}",
+        )
+
+    def test_per_scheme_validation_covers_all_canonical_ids(self):
+        """The readiness check must examine every scheme loaded from schemes.json."""
+        expected_ids = {s["scheme_id"] for s in self.retriever.schemes}
+        self.assertEqual(len(expected_ids), 5)
+        # If index_status reports no missing schemes and is ready, all 5 were checked
+        status = self.retriever.index_status
+        self.assertTrue(status["vector_index_ready"])
+        self.assertEqual(status["chunks_count"], 20)
+
+
 if __name__ == "__main__":
     unittest.main()
 

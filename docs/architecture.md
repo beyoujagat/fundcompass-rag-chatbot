@@ -350,7 +350,7 @@ flowchart LR
       }
     },
     "deploy": {
-      "startCommand": "uvicorn src.api.main:app --host 0.0.0.0 --port $PORT --workers 2",
+      "startCommand": "python -m src.ingestion.indexer && uvicorn src.api.main:app --host 0.0.0.0 --port $PORT --workers 1",
       "healthcheckPath": "/api/health"
     }
   }
