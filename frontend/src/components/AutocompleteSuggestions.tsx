@@ -118,12 +118,13 @@ export const AutocompleteSuggestions: React.FC<AutocompleteSuggestionsProps> = (
                 >
                   {item.badgeText}
                 </span>
-                <ArrowUpRight
-                  className={`w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 ${
-                    isSelected ? 'text-emerald-600' : 'text-slate-300 group-hover:text-slate-600'
-                  }`}
-                  title="Insert question"
-                />
+                <span title="Insert question" className="flex items-center">
+                  <ArrowUpRight
+                    className={`w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 ${
+                      isSelected ? 'text-emerald-600' : 'text-slate-300 group-hover:text-slate-600'
+                    }`}
+                  />
+                </span>
               </div>
             </button>
           );
