@@ -16,7 +16,9 @@
       "benchmark": "NIFTY Midcap 150 TRI",
       "fund_manager": "Chirag Setalvad",
       "factsheet_url": "https://www.hdfcfund.com/investor-services/fund-performance/factsheet",
-      "statement_download_process": "Statements and Capital Gains reports can be downloaded from the HDFC Mutual Fund online investor portal or via MFCentral/CAMS using PAN and registered folio number."
+      "statement_download_process": "Statements and Capital Gains reports can be downloaded from the HDFC Mutual Fund online investor portal or via MFCentral/CAMS using PAN and registered folio number.",
+      "nav": "₹229.552",
+      "nav_date": "2026-11-10"
     },
     "aliases": [
       "mid cap",
@@ -44,7 +46,9 @@
       "benchmark": "S&P BSE 250 SmallCap TRI",
       "fund_manager": "Chirag Setalvad",
       "factsheet_url": "https://www.hdfcfund.com/investor-services/fund-performance/factsheet",
-      "statement_download_process": "Statements and Capital Gains reports can be downloaded from the HDFC Mutual Fund online investor portal or via MFCentral/CAMS using PAN and registered folio number."
+      "statement_download_process": "Statements and Capital Gains reports can be downloaded from the HDFC Mutual Fund online investor portal or via MFCentral/CAMS using PAN and registered folio number.",
+      "nav": "₹155.255",
+      "nav_date": "2026-11-10"
     },
     "aliases": [
       "small cap",
@@ -72,7 +76,9 @@
       "benchmark": "Domestic Price of Physical Gold",
       "fund_manager": "Nirman Morakhia, Arun Agarwal",
       "factsheet_url": "https://www.hdfcfund.com/investor-services/fund-performance/factsheet",
-      "statement_download_process": "Statements and Capital Gains reports can be downloaded from the HDFC Mutual Fund online investor portal or via MFCentral/CAMS using PAN and registered folio number."
+      "statement_download_process": "Statements and Capital Gains reports can be downloaded from the HDFC Mutual Fund online investor portal or via MFCentral/CAMS using PAN and registered folio number.",
+      "nav": "₹43.4947",
+      "nav_date": "2026-11-10"
     },
     "aliases": [
       "gold",
@@ -100,7 +106,9 @@
       "benchmark": "NIFTY 100 TRI",
       "fund_manager": "Rahul Baijal",
       "factsheet_url": "https://www.hdfcfund.com/investor-services/fund-performance/factsheet",
-      "statement_download_process": "Statements and Capital Gains reports can be downloaded from the HDFC Mutual Fund online investor portal or via MFCentral/CAMS using PAN and registered folio number."
+      "statement_download_process": "Statements and Capital Gains reports can be downloaded from the HDFC Mutual Fund online investor portal or via MFCentral/CAMS using PAN and registered folio number.",
+      "nav": "₹1269.861",
+      "nav_date": "2026-11-10"
     },
     "aliases": [
       "large cap",
@@ -128,7 +136,9 @@
       "benchmark": "NIFTY 500 TRI",
       "fund_manager": "Roshi Jain",
       "factsheet_url": "https://www.hdfcfund.com/investor-services/fund-performance/factsheet",
-      "statement_download_process": "Statements and Capital Gains reports can be downloaded from the HDFC Mutual Fund online investor portal or via MFCentral/CAMS using PAN and registered folio number."
+      "statement_download_process": "Statements and Capital Gains reports can be downloaded from the HDFC Mutual Fund online investor portal or via MFCentral/CAMS using PAN and registered folio number.",
+      "nav": "₹1552.433",
+      "nav_date": "2026-11-10"
     },
     "aliases": [
       "elss",

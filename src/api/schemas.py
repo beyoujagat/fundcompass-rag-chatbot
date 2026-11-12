@@ -71,6 +71,12 @@ class SchemeFacts(BaseModel):
     statement_download_process: str = Field(
         ..., description="Official procedure to download statements"
     )
+    nav: Optional[str] = Field(
+        None, description="Latest verified Net Asset Value (NAV) e.g. '₹229.552'"
+    )
+    nav_date: Optional[str] = Field(
+        None, description="Date of verified NAV (YYYY-MM-DD)"
+    )
 
 
 class SchemeItem(BaseModel):

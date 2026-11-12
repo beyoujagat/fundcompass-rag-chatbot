@@ -26,7 +26,7 @@ Your responses must follow these STRICT RULES:
 3. Length: Maximum of 3 sentences. Be direct, clear, and objective.
 4. Citations: Include exactly ONE official source link at the end of the text.
 5. Absolute Prohibition: NEVER give investment advice, opinions, rating comparisons, or return predictions.
-6. If the user asks for daily fluctuating Net Asset Value (NAV), explain that NAV fluctuates daily after market close and can be checked directly on the official Groww factsheet link.
+6. If the user asks for Net Asset Value (NAV), state the latest verified NAV value with its date provenance if available in context, and explain that NAV fluctuates daily after market close each business day.
 """
 
 _groq_client: Optional[Any] = None
@@ -174,6 +174,13 @@ def _generate_fallback_factual_response(
         return f"{scheme_name} is currently managed by {mgr}."
 
     elif attribute == "nav" or re.search(r"\bnav\b", query.lower()):
+        nav_val = facts.get("nav")
+        nav_date = facts.get("nav_date") or (scheme.get("last_updated") if scheme else DEFAULT_LAST_UPDATED)
+        if nav_val and str(nav_val).strip() not in ("", "N/A", "None"):
+            return (
+                f"The latest verified Net Asset Value (NAV) for {scheme_name} is {nav_val} as of {nav_date}. "
+                "NAV fluctuates daily with market movements and is updated after market close each business day."
+            )
         return (
             f"The Net Asset Value (NAV) of {scheme_name} fluctuates daily with market movements and is updated after market close each business day. "
             "You can view today's live NAV and historical NAV trends directly on the official Groww factsheet."
@@ -245,11 +252,7 @@ def generate_factual_response_detailed(
 
     # Special handling for daily fluctuating NAV inquiries
     if attribute == "nav" or re.search(r"\bnav\b", query.lower()):
-        scheme_name = scheme.get("scheme_name", "the mutual fund scheme")
-        raw_answer = (
-            f"The Net Asset Value (NAV) of {scheme_name} fluctuates daily with market movements and is updated after market close each business day. "
-            "You can view today's latest live NAV and historical NAV data directly on the official Groww factsheet."
-        )
+        raw_answer = _generate_fallback_factual_response(scheme, "nav", query)
         enforced = enforce_constraints(raw_answer, source_url, last_updated)
         return GenerationResult(
             reply=enforced,

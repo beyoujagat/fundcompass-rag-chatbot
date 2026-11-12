@@ -451,6 +451,60 @@ class TestIndexReadinessPerScheme(unittest.TestCase):
         self.assertEqual(status["chunks_count"], 20)
 
 
+class TestDynamicNAVFinancialAccuracy(unittest.TestCase):
+    """Priority 4 Tests: Dynamic NAV & Financial Response Accuracy across all 5 schemes."""
+
+    def setUp(self):
+        self.retriever = SchemeRetriever()
+
+    def test_nav_retrieval_and_precision_all_five_schemes(self):
+        """Verifies exact verified NAV values, date provenance, and fluctuation notice for all 5 schemes."""
+        expected_schemes = [
+            ("What is the NAV of HDFC Mid-Cap?", "hdfc-mid-cap-fund-direct-growth", "₹229.552"),
+            ("What is the current NAV of Small Cap?", "hdfc-small-cap-fund-direct-growth", "₹155.255"),
+            ("HDFC Gold ETF NAV today", "hdfc-gold-etf-fund-of-fund-direct-plan-growth", "₹43.4947"),
+            ("Tell me the NAV of HDFC Top 100", "hdfc-large-cap-fund-direct-growth", "₹1269.861"),
+            ("What is the NAV for HDFC ELSS Tax Saver?", "hdfc-elss-tax-saver-fund-direct-plan-growth", "₹1552.433"),
+        ]
+        for query, expected_sid, expected_nav in expected_schemes:
+            with self.subTest(scheme_id=expected_sid):
+                retrieval = self.retriever.retrieve_facts(query)
+                self.assertEqual(retrieval["scheme_id"], expected_sid)
+                self.assertEqual(retrieval["relevant_attribute"], "nav")
+                self.assertEqual(retrieval["facts"]["nav"], expected_nav)
+
+                res = generate_factual_response_detailed(query, retrieval, client=False)
+                self.assertIn(expected_nav, res.reply)
+                self.assertIn("2026-11-10", res.reply)
+                self.assertIn("fluctuates daily", res.reply.lower())
+                self.assertIn("market close", res.reply.lower())
+                self.assertIn(retrieval["source_url"], res.reply)
+                self.assertIn("Last updated from sources: 2026-11-10", res.reply)
+
+    def test_missing_nav_graceful_fallback(self):
+        """Verifies missing or null NAV does not hallucinate figures and provides clean fallback."""
+        scheme_data = {
+            "scheme_name": "HDFC Test Fund (Direct Plan - Growth)",
+            "scheme_id": "hdfc-test-fund",
+            "source_url": "https://groww.in/mutual-funds/hdfc-test-fund",
+            "last_updated": "2026-11-10",
+            "facts": {"nav": None, "nav_date": None},
+        }
+        retrieval = {
+            "scheme": scheme_data,
+            "scheme_id": "hdfc-test-fund",
+            "facts": scheme_data["facts"],
+            "source_url": scheme_data["source_url"],
+            "last_updated": "2026-11-10",
+            "relevant_attribute": "nav",
+        }
+        res = generate_factual_response_detailed("What is the NAV?", retrieval, client=False)
+        self.assertNotIn("₹", res.reply)
+        self.assertIn("fluctuates daily", res.reply.lower())
+        self.assertIn("market close", res.reply.lower())
+        self.assertIn("Groww factsheet", res.reply)
+
+
 if __name__ == "__main__":
     unittest.main()
 

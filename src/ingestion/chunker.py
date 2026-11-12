@@ -70,11 +70,18 @@ def build_scheme_chunks(scheme: Dict[str, Any]) -> List[Dict[str, Any]]:
     chunks: List[Dict[str, Any]] = []
 
     # -------------------------------------------------------------
-    # Chunk 1: Costs & Fees (Expense Ratio, Exit Load)
+    # Chunk 1: Costs & Fees (Expense Ratio, Exit Load, Verified NAV)
     # -------------------------------------------------------------
+    nav_sentence = ""
+    if facts.get("nav"):
+        nav_val = str(facts.get("nav", "")).strip()
+        nav_dt = str(facts.get("nav_date", last_updated)).strip()
+        nav_sentence = f" The latest verified Net Asset Value (NAV) is {nav_val} as of {nav_dt}."
+
     fees_text = (
         f"The direct plan expense ratio for {scheme_name} is {facts.get('expense_ratio', '').strip()}. "
         f"The exit load is {facts.get('exit_load', '').strip()}."
+        f"{nav_sentence}"
     )
     chunks.append({
         "id": f"{scheme_id}_{CHUNK_CATEGORY_FEES}",

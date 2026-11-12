@@ -38,6 +38,13 @@ REQUIRED_FACT_FIELDS: List[str] = [
     "statement_download_process",
 ]
 
+# Optional Factual Parameters (e.g. daily/dynamic NAV and NAV dates)
+OPTIONAL_FACT_FIELDS: List[str] = [
+    "nav",
+    "nav_date",
+    "effective_date",
+]
+
 # Top-level Fields for Canonical Mutual Fund Record
 REQUIRED_TOP_LEVEL_FIELDS: List[str] = [
     "scheme_id",
@@ -84,6 +91,8 @@ try:
         fund_manager: str = Field(..., description="Fund manager name(s)")
         factsheet_url: str = Field(..., description="Official AMC factsheet URL")
         statement_download_process: str = Field(..., description="Statement download procedure")
+        nav: Optional[str] = Field(None, description="Latest verified Net Asset Value (NAV)")
+        nav_date: Optional[str] = Field(None, description="NAV effective date YYYY-MM-DD")
 
         @field_validator("riskometer")
         @classmethod
@@ -231,6 +240,11 @@ def normalize_scheme(record: Dict[str, Any]) -> Dict[str, Any]:
         for k in REQUIRED_FACT_FIELDS:
             v = raw_facts.get(k, "")
             cleaned_facts[k] = str(v).strip() if v is not None else ""
+        for k in OPTIONAL_FACT_FIELDS:
+            if k in raw_facts and raw_facts[k] is not None:
+                val = str(raw_facts[k]).strip()
+                if val:
+                    cleaned_facts[k] = val
 
     normalized_record: Dict[str, Any] = {
         "scheme_id": scheme_id,

@@ -182,8 +182,10 @@ class TestPostDeploymentSmokeMatrix(unittest.TestCase):
         self.assertEqual(retrieval["scheme_id"], "hdfc-mid-cap-fund-direct-growth")
         self.assertEqual(retrieval["relevant_attribute"], "nav")
 
-        # 3. Grounded generation explains daily NAV fluctuation after market close
+        # 3. Grounded generation returns verified NAV with date provenance and fluctuation guidance
         response = generate_factual_response(query, retrieval, client=False)
+        self.assertIn("₹229.552", response)
+        self.assertIn("2026-11-10", response)
         self.assertIn("fluctuates daily", response.lower())
         self.assertIn("market close", response.lower())
         self.assertIn("https://groww.in/mutual-funds/hdfc-mid-cap-fund-direct-growth", response)
