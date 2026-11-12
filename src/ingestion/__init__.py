@@ -28,6 +28,19 @@ from src.ingestion.indexer import (
     get_embedding_function,
     query_vector_store,
 )
+from src.ingestion.scraper import (
+    GROWW_SCHEME_TARGETS,
+    GrowwFetchError,
+    GrowwIngestionPipeline,
+    GrowwParseError,
+    GrowwScraperError,
+    extract_next_data_payload,
+    fetch_scheme_html,
+    format_nav,
+    generate_step_summary,
+    parse_groww_metrics,
+    run_scraper,
+)
 
 __all__ = [
     "EXPECTED_SCHEME_IDS",
@@ -52,4 +65,15 @@ __all__ = [
     "build_vector_index",
     "get_embedding_function",
     "query_vector_store",
+    "GROWW_SCHEME_TARGETS",
+    "GrowwIngestionPipeline",
+    "run_scraper",
+    "fetch_scheme_html",
+    "extract_next_data_payload",
+    "format_nav",
+    "generate_step_summary",
+    "parse_groww_metrics",
+    "GrowwScraperError",
+    "GrowwFetchError",
+    "GrowwParseError",
 ]
