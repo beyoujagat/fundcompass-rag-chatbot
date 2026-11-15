@@ -217,6 +217,68 @@ class TestMetricParsingAndNormalization(unittest.TestCase):
         self.assertEqual(facts["nav"], "₹230.10")
         self.assertEqual(facts["nav_date"], "2026-11-12")
 
+    def test_nav_fields_preserved_when_incoming_values_are_missing(self):
+        self.existing_scheme["facts"].update({
+            "nav": "\u20b9228.1234", "nav_date": "2026-11-10",
+            "effective_date": "2026-11-10",
+        })
+        # Missing fields, explicit nulls, and empty strings all retain verified values.
+        for missing_fields in [("nav",), ("nav_date",), ("nav", "nav_date")]:
+            for missing_value in ["omitted", None, ""]:
+                with self.subTest(fields=missing_fields, value=missing_value):
+                    incoming = dict(SAMPLE_GROWW_MF_DATA)
+                    for field in missing_fields:
+                        if missing_value == "omitted":
+                            incoming.pop(field)
+                        else:
+                            incoming[field] = missing_value
+                    original = json.loads(json.dumps(self.existing_scheme))
+                    record = parse_groww_metrics(
+                        incoming, self.existing_scheme["scheme_id"],
+                        self.existing_scheme["source_url"], self.existing_scheme,
+                    )
+                    expected_date = "2026-11-10" if "nav_date" in missing_fields else "2026-11-11"
+                    expected_nav = "\u20b9228.1234" if "nav" in missing_fields else "\u20b9229.552"
+                    self.assertEqual(record["facts"]["nav"], expected_nav)
+                    self.assertEqual(record["facts"]["nav_date"], expected_date)
+                    self.assertEqual(record["facts"]["effective_date"], expected_date)
+                    self.assertEqual(record["last_updated"], expected_date)
+                    self.assertTrue(record["data_fetched_at"].endswith("Z"))
+                    self.assertEqual(self.existing_scheme, original)
+                    validate_scheme(record)
+
+    def test_valid_nav_update_replaces_existing_values(self):
+        self.existing_scheme["facts"].update({
+            "nav": "\u20b9228.1234", "nav_date": "2026-11-10",
+            "effective_date": "2026-11-10",
+        })
+        incoming = dict(SAMPLE_GROWW_MF_DATA, nav=230.1234, nav_date="12-Nov-2026")
+        record = parse_groww_metrics(
+            incoming, self.existing_scheme["scheme_id"],
+            self.existing_scheme["source_url"], self.existing_scheme,
+        )
+        self.assertEqual(record["facts"]["nav"], "\u20b9230.1234")
+        self.assertEqual(record["facts"]["nav_date"], "2026-11-12")
+        self.assertEqual(record["facts"]["effective_date"], "2026-11-12")
+        self.assertEqual(record["last_updated"], "2026-11-12")
+
+    def test_missing_nav_without_previous_values_does_not_invent_facts(self):
+        record = parse_groww_metrics(
+            {}, self.existing_scheme["scheme_id"],
+            self.existing_scheme["source_url"], self.existing_scheme,
+        )
+        for field in ("nav", "nav_date", "effective_date"):
+            self.assertNotIn(field, record["facts"])
+        self.assertEqual(record["last_updated"], "2026-11-10")
+
+    def test_valid_nav_date_without_existing_record_sets_last_updated(self):
+        record = parse_groww_metrics(
+            SAMPLE_GROWW_MF_DATA, self.existing_scheme["scheme_id"],
+            self.existing_scheme["source_url"],
+        )
+        self.assertEqual(record["facts"]["nav_date"], "2026-11-11")
+        self.assertEqual(record["last_updated"], "2026-11-11")
+
     def test_extracted_record_passes_normalizer_validation(self):
         """Extracted record passes canonical validate_scheme() check."""
         record = parse_groww_metrics(
@@ -324,6 +386,15 @@ class TestGrowwIngestionPipelineFailSafe(unittest.TestCase):
         self.temp_dir.cleanup()
 
     @patch("src.ingestion.scraper.fetch_scheme_html")
+    def test_dry_run_does_not_persist_fetched_updates(self, mock_fetch):
+        mock_fetch.return_value = SAMPLE_HTML_PAGE
+        original = self.data_path.read_bytes()
+        summary = self.pipeline.run_ingestion(dry_run=True)
+        self.assertEqual(summary["successfully_updated"], 5)
+        self.assertEqual(summary["records"][0]["facts"]["nav_date"], "2026-11-11")
+        self.assertEqual(self.data_path.read_bytes(), original)
+
+    @patch("src.ingestion.scraper.fetch_scheme_html")
     def test_pipeline_retains_records_on_fetch_failure(self, mock_fetch):
         """Simulates complete network failure; verifies all 5 schemes are retained untouched."""
         mock_fetch.side_effect = GrowwFetchError("Connection timed out")
@@ -360,7 +431,36 @@ class TestGrowwIngestionPipelineFailSafe(unittest.TestCase):
         for scheme in persisted:
             self.assertEqual(scheme["facts"]["expense_ratio"], "0.74%")
             self.assertEqual(scheme["facts"]["nav"], "₹229.552")
+            self.assertEqual(scheme["facts"]["nav_date"], "2026-11-11")
+            self.assertEqual(scheme["last_updated"], "2026-11-11")
 
+        validate_corpus(persisted, expected_count=5)
+
+    @patch("src.ingestion.scraper.fetch_scheme_html")
+    def test_pipeline_persists_existing_nav_when_scraped_fields_are_missing(self, mock_fetch):
+        for scheme in self.initial_schemes:
+            scheme["facts"].update({
+                "nav": "\u20b9228.1234", "nav_date": "2026-11-10",
+                "effective_date": "2026-11-10",
+            })
+        self.data_path.write_text(json.dumps(self.initial_schemes), encoding="utf-8")
+        sparse_data = dict(SAMPLE_GROWW_MF_DATA)
+        sparse_data.pop("nav")
+        sparse_data.pop("nav_date")
+        mock_fetch.return_value = (
+            '<script id="__NEXT_DATA__" type="application/json">'
+            + json.dumps({"props": {"pageProps": {"mfServerSideData": sparse_data}}})
+            + '</script>'
+        )
+        summary = self.pipeline.run_ingestion(dry_run=False)
+        self.assertEqual(summary["successfully_updated"], 5)
+        persisted = json.loads(self.data_path.read_text(encoding="utf-8"))
+        for scheme in persisted:
+            self.assertEqual(scheme["facts"]["nav"], "\u20b9228.1234")
+            self.assertEqual(scheme["facts"]["nav_date"], "2026-11-10")
+            self.assertEqual(scheme["facts"]["effective_date"], "2026-11-10")
+            self.assertEqual(scheme["last_updated"], "2026-11-10")
+            self.assertEqual(scheme["facts"]["expense_ratio"], "0.74%")
         validate_corpus(persisted, expected_count=5)
 
     @patch("src.ingestion.scraper.fetch_scheme_html")

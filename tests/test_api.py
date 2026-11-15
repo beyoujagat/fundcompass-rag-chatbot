@@ -93,6 +93,12 @@ class TestAPIEndpoints(unittest.TestCase):
 
     def test_ev_p5_03_factual_chat_endpoint(self):
         """EV-P5-03: Verify POST /api/chat with factual query returns 200, citation, and footer."""
+        import json
+        from src.config import PROCESSED_DATA_PATH
+
+        source_records = json.loads(PROCESSED_DATA_PATH.read_text(encoding="utf-8"))
+        expected = next(s for s in source_records
+                        if s["scheme_id"] == "hdfc-mid-cap-fund-direct-growth")
         payload = {"message": "What is the exit load for HDFC Mid-Cap Opportunities Fund?"}
         response = self.client.post("/api/chat", json=payload)
         self.assertEqual(response.status_code, 200)
@@ -101,10 +107,11 @@ class TestAPIEndpoints(unittest.TestCase):
         self.assertEqual(data["intent"], "factual_response")
         self.assertEqual(data["scheme_id"], "hdfc-mid-cap-fund-direct-growth")
         self.assertIn("exit load", data["reply"].lower())
-        self.assertIn("1.00%", data["reply"])
+        self.assertIn(expected["facts"]["exit_load"], data["reply"])
         self.assertIn("Source: [https://groww.in/mutual-funds/hdfc-mid-cap-fund-direct-growth]", data["reply"])
-        self.assertIn("Last updated from sources: 2026-11-10", data["reply"])
-        self.assertEqual(data["last_updated"], "2026-11-10")
+        self.assertEqual(data["source_url"], expected["source_url"])
+        self.assertIn(f"Last updated from sources: {expected['last_updated']}", data["reply"])
+        self.assertEqual(data["last_updated"], expected["last_updated"])
 
     def test_ev_p5_04_advisory_refusal_endpoint(self):
         """EV-P5-04: Verify POST /api/chat with advisory query returns 200, advisory_refusal, and AMFI link."""

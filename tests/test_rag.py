@@ -459,27 +459,41 @@ class TestDynamicNAVFinancialAccuracy(unittest.TestCase):
 
     def test_nav_retrieval_and_precision_all_five_schemes(self):
         """Verifies exact verified NAV values, date provenance, and fluctuation notice for all 5 schemes."""
+        import json
+        from src.config import PROCESSED_DATA_PATH
+
+        source_records = {s["scheme_id"]: s for s in
+                          json.loads(PROCESSED_DATA_PATH.read_text(encoding="utf-8"))}
         expected_schemes = [
-            ("What is the NAV of HDFC Mid-Cap?", "hdfc-mid-cap-fund-direct-growth", "₹229.552"),
-            ("What is the current NAV of Small Cap?", "hdfc-small-cap-fund-direct-growth", "₹155.255"),
-            ("HDFC Gold ETF NAV today", "hdfc-gold-etf-fund-of-fund-direct-plan-growth", "₹43.4947"),
-            ("Tell me the NAV of HDFC Top 100", "hdfc-large-cap-fund-direct-growth", "₹1269.861"),
-            ("What is the NAV for HDFC ELSS Tax Saver?", "hdfc-elss-tax-saver-fund-direct-plan-growth", "₹1552.433"),
+            ("What is the NAV of HDFC Mid-Cap?", "hdfc-mid-cap-fund-direct-growth"),
+            ("What is the current NAV of Small Cap?", "hdfc-small-cap-fund-direct-growth"),
+            ("HDFC Gold ETF NAV today", "hdfc-gold-etf-fund-of-fund-direct-plan-growth"),
+            ("Tell me the NAV of HDFC Top 100", "hdfc-large-cap-fund-direct-growth"),
+            ("What is the NAV for HDFC ELSS Tax Saver?", "hdfc-elss-tax-saver-fund-direct-plan-growth"),
         ]
-        for query, expected_sid, expected_nav in expected_schemes:
+        self.assertEqual(len(expected_schemes), 5)
+        self.assertEqual({sid for _, sid in expected_schemes}, set(source_records))
+        for query, expected_sid in expected_schemes:
             with self.subTest(scheme_id=expected_sid):
+                expected = source_records[expected_sid]
+                expected_nav = expected["facts"]["nav"]
+                expected_date = expected["facts"]["nav_date"]
                 retrieval = self.retriever.retrieve_facts(query)
                 self.assertEqual(retrieval["scheme_id"], expected_sid)
                 self.assertEqual(retrieval["relevant_attribute"], "nav")
                 self.assertEqual(retrieval["facts"]["nav"], expected_nav)
+                self.assertEqual(retrieval["facts"]["nav_date"], expected_date)
+                self.assertEqual(retrieval["last_updated"], expected["last_updated"])
+                self.assertEqual(retrieval["source_url"], expected["source_url"])
 
                 res = generate_factual_response_detailed(query, retrieval, client=False)
                 self.assertIn(expected_nav, res.reply)
-                self.assertIn("2026-11-10", res.reply)
+                self.assertIn(f"{expected_nav} as of {expected_date}", res.reply)
                 self.assertIn("fluctuates daily", res.reply.lower())
                 self.assertIn("market close", res.reply.lower())
                 self.assertIn(retrieval["source_url"], res.reply)
-                self.assertIn("Last updated from sources: 2026-11-10", res.reply)
+                self.assertEqual(res.last_updated, expected["last_updated"])
+                self.assertIn(f"Last updated from sources: {expected['last_updated']}", res.reply)
 
     def test_missing_nav_graceful_fallback(self):
         """Verifies missing or null NAV does not hallucinate figures and provides clean fallback."""

@@ -55,6 +55,69 @@ class TestPIIFilter(unittest.TestCase):
         has_pii, _ = detect_pii("My aadhaar number is 234567890123")
         self.assertTrue(has_pii)
 
+    def test_pii_pin_detection_and_redaction(self):
+        cases = [
+            ("My PIN is 1234", "1234"),
+            ("My PIN is 123456", "123456"),
+            ("my pin: 0012", "0012"),
+            ("Your PIN = 00123", "00123"),
+            ("ATM PIN is 001234", "001234"),
+            ("uPi PiN: 012345", "012345"),
+            ("My debit card PIN code is 1234", "1234"),
+            ("credit card PIN 123456", "123456"),
+            ("Bank PIN was 1234", "1234"),
+            ("transaction PIN: 1234", "1234"),
+            ("personal identification number is 0123", "0123"),
+        ]
+        for query, digits in cases:
+            with self.subTest(query=query):
+                self.assertEqual(detect_pii(query), (True, PII_REFUSAL_MESSAGE))
+                result = scan_pii(query)
+                self.assertIn(PIIType.PIN, result.detected_types)
+                self.assertIn(digits, result.matches[PIIType.PIN.value][0])
+                self.assertEqual(result.warning_message, PII_REFUSAL_MESSAGE)
+                self.assertIn("[REDACTED_PIN]", result.sanitized_text)
+                self.assertNotIn(digits, result.sanitized_text)
+                self.assertEqual(sanitize_pii(query), result.sanitized_text)
+
+    def test_pii_aadhaar_group_separators_and_redaction(self):
+        for number in [
+            "1234-5678-9012", "1234  5678  9012", "1234\t\t5678\t9012",
+            "1234 - 5678 - 9012", "1234-5678  9012",
+            "1234 5678 9012", "123456789012", "1234\n5678\n9012",
+        ]:
+            with self.subTest(number=number):
+                query = "My Aadhaar is " + number
+                self.assertEqual(detect_pii(query), (True, PII_REFUSAL_MESSAGE))
+                result = scan_pii(query)
+                self.assertIn(PIIType.AADHAAR, result.detected_types)
+                self.assertIn(number, result.matches[PIIType.AADHAAR.value])
+                expected = "My Aadhaar is [REDACTED_AADHAAR]"
+                self.assertEqual(result.sanitized_text, expected)
+                self.assertEqual(sanitize_pii(query), expected)
+
+    def test_pii_pin_and_aadhaar_negative_cases(self):
+        for query in [
+            "NAV is 1234", "Minimum SIP is 1234", "1234",
+            "My PIN code is 560001", "Postal PIN is 560001",
+            "My postal PIN code is 560001", "Postal code: 560001",
+            "PIN code 560001", "Pincode is 560001",
+            "My PIN is 123", "My PIN is 1234567", "My PIN is 1234abc",
+            "What is an ATM PIN?", "My pinboard is 1234",
+            "My Aadhaar is 123-5678-9012", "My Aadhaar is 12345-5678-9012",
+            "My Aadhaar is 1234-567-9012", "My Aadhaar is 1234-5678-90123",
+            "My Aadhaar is 1234--5678--9012", "My Aadhaar is 1234/5678/9012",
+            "My Aadhaar is 12345678901",
+        ]:
+            with self.subTest(query=query):
+                self.assertEqual(detect_pii(query), (False, None))
+                result = scan_pii(query)
+                self.assertFalse(result.has_pii)
+                self.assertEqual(result.detected_types, [])
+                self.assertEqual(result.matches, {})
+                self.assertEqual(result.sanitized_text, query)
+                self.assertEqual(sanitize_pii(query), query)
+
     def test_pii_phone_number_detection(self):
         """Verify standard 10-digit and +91 Indian phone number detection."""
         has_pii, _ = detect_pii("Call me at 9876543210 for details")

@@ -265,11 +265,14 @@ def parse_groww_metrics(
 
     # 1. NAV and NAV Date
     raw_nav = mfd.get("nav")
-    formatted_nav = format_nav(raw_nav)
+    formatted_nav = format_nav(raw_nav) or existing_facts.get("nav")
 
     raw_nav_date = mfd.get("nav_date")
-    iso_nav_date = parse_date_to_iso(raw_nav_date)
-    effective_date = iso_nav_date or existing_scheme.get("last_updated") if existing_scheme else None
+    incoming_nav_date = parse_date_to_iso(raw_nav_date)
+    iso_nav_date = incoming_nav_date or existing_facts.get("nav_date")
+    effective_date = (
+        incoming_nav_date or (existing_scheme or {}).get("last_updated") or iso_nav_date
+    )
     if not effective_date:
         effective_date = datetime.now(timezone.utc).strftime("%Y-%m-%d")
 
@@ -390,7 +393,9 @@ def parse_groww_metrics(
         facts["nav"] = formatted_nav
     if iso_nav_date:
         facts["nav_date"] = iso_nav_date
-        facts["effective_date"] = iso_nav_date
+    nav_effective_date = incoming_nav_date or existing_facts.get("effective_date") or iso_nav_date
+    if nav_effective_date:
+        facts["effective_date"] = nav_effective_date
 
     # Determine scheme metadata (strictly preserve canonical naming invariance)
     scheme_name = (

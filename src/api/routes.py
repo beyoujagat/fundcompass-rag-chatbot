@@ -3,7 +3,7 @@
 import logging
 from typing import List
 
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, Response, status
 
 from src.api.schemas import (
     ChatRequest,
@@ -24,11 +24,16 @@ router = APIRouter(prefix="/api", tags=["Fund Compass"])
 retriever = SchemeRetriever()
 
 
-@router.get("/health", response_model=HealthResponse, summary="Service Health Check")
-def health_check() -> HealthResponse:
-    """Returns application health status, version, and the permanent regulatory disclaimer."""
+@router.get("/health", response_model=HealthResponse, summary="Service Health Check",
+            responses={503: {"model": HealthResponse, "description": "Retrieval not ready"}})
+def health_check(response: Response) -> HealthResponse:
+    """Report current data/retrieval readiness, including the supported fallback mode."""
+    readiness = retriever.check_readiness()
+    ready = readiness["data_ready"] and readiness["retrieval_ready"]
+    response.status_code = status.HTTP_200_OK if ready else status.HTTP_503_SERVICE_UNAVAILABLE
     return HealthResponse(
-        status="ok",
+        status="ok" if ready else "not_ready",
+        **readiness,
         app="Fund Compass",
         version="2.0.0",
         disclaimer=DISCLAIMER_TEXT,

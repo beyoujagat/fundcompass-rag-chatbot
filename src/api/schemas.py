@@ -99,7 +99,10 @@ class SchemeItem(BaseModel):
 class HealthResponse(BaseModel):
     """System health monitor response schema."""
 
-    status: str = Field("ok", description="Service health indicator")
+    status: str = Field("ok", description="ok when ready; not_ready otherwise")
+    data_ready: bool = Field(False, description="Required scheme corpus is usable")
+    retrieval_ready: bool = Field(False, description="Scheme retrieval probe succeeded")
+    retrieval_mode: str = Field("unavailable", description="vector, json_fallback, or unavailable")
     app: str = Field("Fund Compass", description="Application name")
     version: str = Field("2.0.0", description="Application version")
     disclaimer: str = Field(

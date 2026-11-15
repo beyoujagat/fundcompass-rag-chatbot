@@ -2,7 +2,7 @@
 
 Implements Stage 1 compliance guardrails to detect, intercept, and sanitize
 sensitive personal identification and financial credentials before prompt ingress.
-Zero-PII guarantee: PAN, Aadhaar, Mobile, Email, OTPs, and Bank/Folio numbers are blocked.
+Zero-PII guarantee: PAN, Aadhaar, Mobile, Email, OTPs, PINs, and Bank/Folio numbers are blocked.
 """
 
 import re
@@ -18,6 +18,7 @@ class PIIType(str, Enum):
     PHONE = "mobile_phone"
     EMAIL = "email_address"
     OTP = "otp_credential"
+    PIN = "pin_credential"
     ACCOUNT_OR_FOLIO = "account_or_folio"
 
 
@@ -31,8 +32,11 @@ PAN_SPACED_PATTERN: Pattern = re.compile(
     r"\b[A-Za-z]\s+[A-Za-z]\s+[A-Za-z]\s+[A-Za-z]\s+[A-Za-z]\s+[0-9]\s+[0-9]\s+[0-9]\s+[0-9]\s+[A-Za-z]\b"
 )
 
-# 2. Aadhaar Number: 12-digit Indian national identity pattern (\d{4}\s?\d{4}\s?\d{4})
-AADHAAR_SPACED_PATTERN: Pattern = re.compile(r"\b\d{4}\s\d{4}\s\d{4}\b")
+# 2. Aadhaar Number: retain single whitespace; also allow repeated spaces/tabs or hyphens.
+AADHAAR_SPACED_PATTERN: Pattern = re.compile(
+    r"\b\d{4}(?:\s|[ \t]+|[ \t]*-[ \t]*)\d{4}"
+    r"(?:\s|[ \t]+|[ \t]*-[ \t]*)\d{4}\b"
+)
 AADHAAR_UNSPACED_PATTERN: Pattern = re.compile(r"\b[1-9]\d{11}\b")
 
 # 3. Mobile Phone: Indian 10-digit formats with optional +91 prefix
@@ -47,6 +51,17 @@ OTP_PATTERN: Pattern = re.compile(
     re.IGNORECASE,
 )
 
+# Financial PINs: personal credential wording or an explicit financial qualifier.
+# Bare "PIN code" is ambiguous with a postal code and is deliberately excluded.
+PIN_PATTERN: Pattern = re.compile(
+    r"\b(?:(?:my|your)[ \t]+pin(?![ \t]+code\b)"
+    r"|(?:atm|upi|card|debit[ \t]+card|credit[ \t]+card|bank|banking|transaction)"
+    r"[ \t]+pin(?:[ \t]+code)?"
+    r"|personal[ \t]+identification[ \t]+number)\b"
+    r"(?:[ \t]*(?:is|was|=|:|-))*[ \t]*[0-9]{4,6}\b",
+    re.IGNORECASE,
+)
+
 # 6. Bank Account / Folio Identifier: Keyword followed by 6-18 digits or alphanumeric folio
 ACCOUNT_OR_FOLIO_PATTERN: Pattern = re.compile(
     r"\b(?:account|ac|folio|a/c)\s*(?:number|no\.?|#)?\s*(?:is|was|=|:|-)?\s*[\d/]{6,18}\b",
@@ -56,7 +71,7 @@ ACCOUNT_OR_FOLIO_PATTERN: Pattern = re.compile(
 # Mandatory Standard Privacy Warning
 PII_REFUSAL_MESSAGE: str = (
     "For your privacy and security, Fund Compass strictly prohibits entering sensitive personal "
-    "or financial details such as PAN, Aadhaar, account numbers, OTPs, or contact information. "
+    "or financial details such as PAN, Aadhaar, account numbers, OTPs, PINs, or contact information. "
     "Please rephrase your question without including any personal data."
 )
 
@@ -73,7 +88,7 @@ class PIIScanResult:
 
 def scan_pii(text: str) -> PIIScanResult:
     """
-    Scans input text comprehensively for all 6 categories of sensitive personal data.
+    Scans input text comprehensively for all 7 categories of sensitive personal data.
     Returns structured PIIScanResult detailing detected entities and sanitized text.
     """
     if not text or not text.strip():
@@ -125,6 +140,13 @@ def scan_pii(text: str) -> PIIScanResult:
         detected.append(PIIType.OTP)
         matches_dict[PIIType.OTP.value] = otp_matches
         clean_text = OTP_PATTERN.sub("[REDACTED_OTP]", clean_text)
+
+    # Financial PIN Check (use the same pattern for detection and redaction).
+    pin_matches = PIN_PATTERN.findall(text)
+    if pin_matches:
+        detected.append(PIIType.PIN)
+        matches_dict[PIIType.PIN.value] = pin_matches
+        clean_text = PIN_PATTERN.sub("[REDACTED_PIN]", clean_text)
 
     # 6. Bank Account / Folio Identifier Check
     account_matches = ACCOUNT_OR_FOLIO_PATTERN.findall(text)

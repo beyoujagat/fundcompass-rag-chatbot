@@ -23,6 +23,7 @@ concurrency:
 jobs:
   ingest-and-update:
     name: Scrape, Validate & Index Schemes
+    if: ${{ github.ref_name == github.event.repository.default_branch }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
@@ -32,7 +33,8 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1
+          ref: ${{ github.event.repository.default_branch }}
+          fetch-depth: 0
 
       - name: Set up Python 3.11
         uses: actions/setup-python@v5
@@ -55,14 +57,38 @@ jobs:
           python -m src.ingestion.scraper --delay "$DELAY_VAL" $DRY_RUN_FLAG --step-summary
           echo "::endgroup::"
 
-      - name: Step 2 - Execute RAG Ingestion & Vector Indexing
+      - name: Step 2 - Commit & Push Updated Scheme Facts
+        id: persist
+        if: ${{ github.event.inputs.dry_run != 'true' }}
+        shell: bash
+        env:
+          REFRESH_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          set -euo pipefail
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action [Daily Ingestion]"
+          git add data/processed/schemes.json
+          if git diff --staged --quiet; then
+            echo "No changes to persist. See the scraper summary for source dates and failures."
+          else
+            git commit -m "chore(data): automated daily ingestion update [$(date -u +'%Y-%m-%d')]"
+            if ! git pull --rebase origin "$REFRESH_BRANCH"; then
+              git rebase --abort || true
+              echo "::error::Refresh could not be rebased; updated data was not pushed."
+              exit 1
+            fi
+            git push origin "HEAD:$REFRESH_BRANCH"
+          fi
+
+      - name: Step 3 - Execute RAG Ingestion & Vector Indexing
         id: index
         run: |
           echo "::group::Rebuilding Semantic Chunks & Vector Store"
           python -m src.ingestion.indexer
           echo "::endgroup::"
 
-      - name: Step 3 - Upload Updated Knowledge Base Artifacts
+      - name: Step 4 - Upload Updated Knowledge Base Artifacts
+        if: ${{ always() }}
         uses: actions/upload-artifact@v4
         continue-on-error: true
         with:
@@ -71,17 +97,3 @@ jobs:
             data/processed/schemes.json
             data/chroma_db/chunks.json
           retention-days: 30
-
-      - name: Step 4 - Commit & Push Updated Scheme Facts
-        if: ${{ github.event.inputs.dry_run != 'true' }}
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action [Daily Ingestion]"
-          git add data/processed/schemes.json
-          if git diff --staged --quiet; then
-            echo "No factual changes detected in schemes.json. Knowledge base is already current."
-          else
-            git commit -m "chore(data): automated daily ingestion update [$(date -u +'%Y-%m-%d')]"
-            git pull --rebase origin main || git rebase --abort
-            git push origin main
-          fi

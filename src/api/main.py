@@ -39,21 +39,12 @@ app.include_router(router)
 
 @app.on_event("startup")
 def startup_validation():
-    """
-    Validates on backend startup that:
-    1. The 5 canonical schemes exist in data/processed/schemes.json.
-    2. The ChromaDB vector store is populated and verified.
-    Ensures backend fails fast or self-heals rather than silently operating with an incomplete index.
-    """
+    """Require usable scheme data and retrieval, allowing the supported JSON fallback."""
     from src.api.routes import retriever
-    logger.info("Performing backend startup readiness validation...")
-    status = retriever.validate_index_readiness()
-    if status.get("schemes_count", 0) < 5:
-        logger.error(f"FATAL: Incomplete schemes corpus ({status.get('schemes_count')} schemes found).")
-        raise RuntimeError("Incomplete schemes corpus. Expected 5 canonical schemes.")
-    logger.info(
-        f"Startup validation successful: 5 schemes verified, {status.get('chunks_count', 0)} vector chunks active."
-    )
+    readiness = retriever.check_readiness()
+    if not (readiness["data_ready"] and readiness["retrieval_ready"]):
+        raise RuntimeError("Application retrieval is not ready.")
+    logger.info("Startup retrieval ready: %s", readiness["retrieval_mode"])
 
 
 @app.get("/", summary="Root Welcome & Service Information")

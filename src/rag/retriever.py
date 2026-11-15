@@ -285,6 +285,41 @@ class SchemeRetriever:
 
         return status
 
+    def check_readiness(self) -> Dict[str, Any]:
+        """Probe usable corpus and retrieval without rebuilding the index or calling an LLM."""
+        from src.ingestion.normalizer import EXPECTED_SCHEME_IDS, validate_corpus
+
+        readiness = {"data_ready": False, "retrieval_ready": False,
+                     "retrieval_mode": "unavailable"}
+        try:
+            # Check persisted data as well as the records actually used by this instance.
+            for records in (self._load_schemes(), self.schemes):
+                validate_corpus(records, expected_count=len(EXPECTED_SCHEME_IDS))
+                if {s["scheme_id"] for s in records} != set(EXPECTED_SCHEME_IDS):
+                    return readiness
+            if any(self.scheme_map.get(s["scheme_id"]) != s for s in self.schemes):
+                return readiness
+            readiness["data_ready"] = True
+            modes = set()
+            for scheme in self.schemes:
+                result = self.retrieve_facts(
+                    f"What is the expense ratio of {scheme['scheme_name']}?", top_k=1
+                )
+                if (not result.get("is_supported")
+                        or result.get("scheme_id") != scheme["scheme_id"]
+                        or result.get("facts") != scheme["facts"]
+                        or not result.get("context_text", "").strip()):
+                    return readiness
+                modes.add(result.get("retrieval_source"))
+            readiness["retrieval_ready"] = True
+            readiness["retrieval_mode"] = (
+                "vector" if modes == {"chroma_vector_index"} else "json_fallback"
+            )
+        except Exception:
+            # Health output must not expose exception text, file paths, or credentials.
+            return readiness
+        return readiness
+
     def _load_schemes(self) -> List[Dict[str, Any]]:
         """Loads canonical scheme database from processed data path."""
         if not self.data_path.exists():
