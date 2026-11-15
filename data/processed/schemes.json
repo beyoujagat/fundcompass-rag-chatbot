@@ -6,7 +6,7 @@
     "category": "Equity: Mid Cap",
     "source_url": "https://groww.in/mutual-funds/hdfc-mid-cap-fund-direct-growth",
     "last_updated": "2026-11-13",
-    "data_fetched_at": "2026-11-14T06:52:48Z",
+    "data_fetched_at": "2026-11-15T06:57:40Z",
     "facts": {
       "expense_ratio": "0.73%",
       "exit_load": "Exit load of 1.00% if redeemed within 1 year.",
@@ -38,7 +38,7 @@
     "category": "Equity: Small Cap",
     "source_url": "https://groww.in/mutual-funds/hdfc-small-cap-fund-direct-growth",
     "last_updated": "2026-11-13",
-    "data_fetched_at": "2026-11-14T06:52:49Z",
+    "data_fetched_at": "2026-11-15T06:57:42Z",
     "facts": {
       "expense_ratio": "0.79%",
       "exit_load": "Exit load of 1.00% if redeemed within 1 year",
@@ -70,7 +70,7 @@
     "category": "Other: Commodities / Gold FoF",
     "source_url": "https://groww.in/mutual-funds/hdfc-gold-etf-fund-of-fund-direct-plan-growth",
     "last_updated": "2026-11-13",
-    "data_fetched_at": "2026-11-14T06:52:51Z",
+    "data_fetched_at": "2026-11-15T06:57:43Z",
     "facts": {
       "expense_ratio": "0.20%",
       "exit_load": "Exit load of 1.00%, if redeemed within 15 days.",
@@ -102,7 +102,7 @@
     "category": "Equity: Large Cap",
     "source_url": "https://groww.in/mutual-funds/hdfc-large-cap-fund-direct-growth",
     "last_updated": "2026-11-13",
-    "data_fetched_at": "2026-11-14T06:52:52Z",
+    "data_fetched_at": "2026-11-15T06:57:44Z",
     "facts": {
       "expense_ratio": "1.00%",
       "exit_load": "Exit load of 1.00% if redeemed within 1 year",
@@ -134,7 +134,7 @@
     "category": "Equity: ELSS (Tax Saving)",
     "source_url": "https://groww.in/mutual-funds/hdfc-elss-tax-saver-fund-direct-plan-growth",
     "last_updated": "2026-11-13",
-    "data_fetched_at": "2026-11-14T06:52:53Z",
+    "data_fetched_at": "2026-11-15T06:57:46Z",
     "facts": {
       "expense_ratio": "1.18%",
       "exit_load": "Nil",
