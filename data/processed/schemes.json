@@ -5,8 +5,8 @@
     "amc": "HDFC Mutual Fund",
     "category": "Equity: Mid Cap",
     "source_url": "https://groww.in/mutual-funds/hdfc-mid-cap-fund-direct-growth",
-    "last_updated": "2026-11-16",
-    "data_fetched_at": "2026-11-17T08:17:53Z",
+    "last_updated": "2026-11-17",
+    "data_fetched_at": "2026-11-18T07:51:19Z",
     "facts": {
       "expense_ratio": "0.73%",
       "exit_load": "Exit load of 1.00% if redeemed within 1 year.",
@@ -18,9 +18,9 @@
       "fund_manager": "Chirag Setalvad",
       "factsheet_url": "https://www.hdfcfund.com/investor-services/fund-performance/factsheet",
       "statement_download_process": "Statements and Capital Gains reports can be downloaded from the HDFC Mutual Fund online investor portal or via MFCentral/CAMS using PAN and registered folio number.",
-      "nav": "₹230.304",
-      "nav_date": "2026-11-16",
-      "effective_date": "2026-11-16"
+      "nav": "₹230.556",
+      "nav_date": "2026-11-17",
+      "effective_date": "2026-11-17"
     },
     "aliases": [
       "mid cap",
@@ -37,8 +37,8 @@
     "amc": "HDFC Mutual Fund",
     "category": "Equity: Small Cap",
     "source_url": "https://groww.in/mutual-funds/hdfc-small-cap-fund-direct-growth",
-    "last_updated": "2026-11-16",
-    "data_fetched_at": "2026-11-17T08:17:54Z",
+    "last_updated": "2026-11-17",
+    "data_fetched_at": "2026-11-18T07:51:20Z",
     "facts": {
       "expense_ratio": "0.79%",
       "exit_load": "Exit load of 1.00% if redeemed within 1 year",
@@ -50,9 +50,9 @@
       "fund_manager": "Chirag Setalvad",
       "factsheet_url": "https://www.hdfcfund.com/investor-services/fund-performance/factsheet",
       "statement_download_process": "Statements and Capital Gains reports can be downloaded from the HDFC Mutual Fund online investor portal or via MFCentral/CAMS using PAN and registered folio number.",
-      "nav": "₹155.892",
-      "nav_date": "2026-11-16",
-      "effective_date": "2026-11-16"
+      "nav": "₹155.893",
+      "nav_date": "2026-11-17",
+      "effective_date": "2026-11-17"
     },
     "aliases": [
       "small cap",
@@ -69,8 +69,8 @@
     "amc": "HDFC Mutual Fund",
     "category": "Other: Commodities / Gold FoF",
     "source_url": "https://groww.in/mutual-funds/hdfc-gold-etf-fund-of-fund-direct-plan-growth",
-    "last_updated": "2026-11-16",
-    "data_fetched_at": "2026-11-17T08:17:56Z",
+    "last_updated": "2026-11-17",
+    "data_fetched_at": "2026-11-18T07:51:21Z",
     "facts": {
       "expense_ratio": "0.20%",
       "exit_load": "Exit load of 1.00%, if redeemed within 15 days.",
@@ -82,9 +82,9 @@
       "fund_manager": "Krishan Daga",
       "factsheet_url": "https://www.hdfcfund.com/investor-services/fund-performance/factsheet",
       "statement_download_process": "Statements and Capital Gains reports can be downloaded from the HDFC Mutual Fund online investor portal or via MFCentral/CAMS using PAN and registered folio number.",
-      "nav": "₹41.4612",
-      "nav_date": "2026-11-16",
-      "effective_date": "2026-11-16"
+      "nav": "₹41.4355",
+      "nav_date": "2026-11-17",
+      "effective_date": "2026-11-17"
     },
     "aliases": [
       "gold",
@@ -101,10 +101,10 @@
     "amc": "HDFC Mutual Fund",
     "category": "Equity: Large Cap",
     "source_url": "https://groww.in/mutual-funds/hdfc-large-cap-fund-direct-growth",
-    "last_updated": "2026-11-16",
-    "data_fetched_at": "2026-11-17T08:17:57Z",
+    "last_updated": "2026-11-17",
+    "data_fetched_at": "2026-11-18T07:51:23Z",
     "facts": {
-      "expense_ratio": "1.00%",
+      "expense_ratio": "0.99%",
       "exit_load": "Exit load of 1.00% if redeemed within 1 year",
       "min_sip_amount": "₹100",
       "min_lumpsum_amount": "₹100",
@@ -114,9 +114,9 @@
       "fund_manager": "Prashant Jain",
       "factsheet_url": "https://www.hdfcfund.com/investor-services/fund-performance/factsheet",
       "statement_download_process": "Statements and Capital Gains reports can be downloaded from the HDFC Mutual Fund online investor portal or via MFCentral/CAMS using PAN and registered folio number.",
-      "nav": "₹1272.533",
-      "nav_date": "2026-11-16",
-      "effective_date": "2026-11-16"
+      "nav": "₹1278.826",
+      "nav_date": "2026-11-17",
+      "effective_date": "2026-11-17"
     },
     "aliases": [
       "large cap",
@@ -133,8 +133,8 @@
     "amc": "HDFC Mutual Fund",
     "category": "Equity: ELSS (Tax Saving)",
     "source_url": "https://groww.in/mutual-funds/hdfc-elss-tax-saver-fund-direct-plan-growth",
-    "last_updated": "2026-11-16",
-    "data_fetched_at": "2026-11-17T08:17:58Z",
+    "last_updated": "2026-11-17",
+    "data_fetched_at": "2026-11-18T07:51:24Z",
     "facts": {
       "expense_ratio": "1.18%",
       "exit_load": "Nil",
@@ -146,9 +146,9 @@
       "fund_manager": "Vinay Kulkarni",
       "factsheet_url": "https://www.hdfcfund.com/investor-services/fund-performance/factsheet",
       "statement_download_process": "Statements and Capital Gains reports can be downloaded from the HDFC Mutual Fund online investor portal or via MFCentral/CAMS using PAN and registered folio number.",
-      "nav": "₹1553.495",
-      "nav_date": "2026-11-16",
-      "effective_date": "2026-11-16"
+      "nav": "₹1556.312",
+      "nav_date": "2026-11-17",
+      "effective_date": "2026-11-17"
     },
     "aliases": [
       "elss",
